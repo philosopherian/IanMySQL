@@ -5,6 +5,8 @@ plugins {
 group 'pro.ianchen'
 version '1.0'
 
+apply plugin: 'java'
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -17,4 +19,13 @@ dependencies {
     compile 'com.thoughtworks.xstream:xstream:1.4.15'
     compile "net.sf.json-lib:json-lib:2.4:jdk15"
     compile 'net.sf.ehcache:ehcache:2.9.1'
+}
+
+//对应于：javac -encoding utf-8 ...
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+compileJava {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }

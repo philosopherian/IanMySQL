@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'com.zaxxer:HikariCP:4.0.1'
 }
 
 //对应于：javac -encoding utf-8 ...

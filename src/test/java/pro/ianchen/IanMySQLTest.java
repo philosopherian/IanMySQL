@@ -6,6 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -26,7 +29,9 @@ public class IanMySQLTest {
     @After
     public void tearDown() {
         try{
-            this._dataSource.close();
+            if(this._dataSource!=null){
+                this._dataSource.close();
+            }
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -56,16 +61,49 @@ public class IanMySQLTest {
             }
             {
                 IanMySQL sql2=sql.CreateIanMySql();
-                sql2.Sql="create table temp_1 (id bigint not null auto_increament,name varchar(100) not null default '-',level bigint not null default 0, ctime datetime not null default current_timestamp,etime datetime not null default current_timestamp)";
+                sql2.Sql="create table temp_1 (id bigint not null auto_increment primary key,name varchar(100) not null default '-',level bigint not null default 0, ctime datetime not null default current_timestamp,etime datetime not null default current_timestamp)";
                 sql2.ExecuteCmd();
             }
-            for(int i=0;i<10;i++)
+            for(int i=0;i<20;i++)
             {
                 IanMySQL sql2=sql.CreateIanMySql();
                 sql2.Sql="insert into temp_1 (name,level) values (@name,@level)";
                 sql2.AddSqlParamter("@name","Name"+(i+1));
                 sql2.AddSqlParamter("@level",i%3);
                 sql2.ExecuteCmd();
+            }
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                sql2.Sql="update temp_1 set level=@level,etime=@etime where id=@id";
+                sql2.AddSqlParamter("@level",0);
+                sql2.AddSqlParamter("@etime",IanStringTool.MySQLNow());
+                sql2.AddSqlParamter("@id",18);
+                sql2.ExecuteCmd();
+            }
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                sql2.Sql="delete from temp_1 where id=@id";
+                sql2.AddSqlParamter("@id",19);
+                sql2.ExecuteCmd();
+            }
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                sql2.Sql="select * from temp_1";
+                sql2.AddWhere("id>=@minid and id<@maxid");
+                sql2.AddWhere(IanLogicalRelationEnum.Or,"level=@level");
+                sql2.AddSqlParamter("@minid",2);
+                sql2.AddSqlParamter("@maxid",8);
+                sql2.AddSqlParamter("@level",3);
+                sql2.SetOrderBy("id desc");
+                List<HashMap<String,Object>> rows=sql2.GetList();
+                for(HashMap<String,Object> row:rows){
+                    String s="id="+IanConvert.ToLong(row.get("id"))+"\t";
+                    s+="name="+IanConvert.ToString(row.get("name"))+"\t";
+                    s+="level="+IanConvert.ToLong(row.get("level"))+"\t";
+                    s+="ctime="+IanConvert.FormatMySQLDate(IanConvert.ToDate(row.get("ctime")))+"\t";
+                    s+="etime="+IanConvert.FormatMySQLDate(IanConvert.ToDate(row.get("etime")));
+                    System.out.println(s);
+                }
             }
         }catch (Exception ex){
             ex.printStackTrace();

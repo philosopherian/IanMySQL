@@ -17,7 +17,7 @@ public class IanMySQLDataSource {
      * @throws Exception
      */
     public HikariDataSource GetHikariDataSource(String vJdbcUrl,String vUserName,String vPassword) throws Exception{
-        return this.GetHikariDataSource2(vJdbcUrl,vUserName,vPassword,"utf8");
+        return this.GetHikariDataSource(vJdbcUrl,vUserName,vPassword,"utf8");
     }
 
     /**
@@ -29,7 +29,7 @@ public class IanMySQLDataSource {
      * @return Hikari数据库连接池数据源
      * @throws Exception
      */
-    public HikariDataSource GetHikariDataSource2(String vJdbcUrl,String vUserName,String vPassword,String vCharset) throws Exception {
+    public HikariDataSource GetHikariDataSource(String vJdbcUrl,String vUserName,String vPassword,String vCharset) throws Exception {
         String jdbcUrl=IanStringTool.Check(vJdbcUrl,"连接URL");
         String userName=IanStringTool.Check(vUserName,"账号");
         String password=IanStringTool.Check(vPassword,"密码");

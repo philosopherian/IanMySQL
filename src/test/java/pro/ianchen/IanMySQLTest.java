@@ -95,6 +95,7 @@ public class IanMySQLTest {
                 sql2.AddSqlParamter("@maxid",8);
                 sql2.AddSqlParamter("@level",3);
                 sql2.SetOrderBy("id desc");
+                sql2.SetLimit("3");
                 List<HashMap<String,Object>> rows=sql2.GetList();
                 for(HashMap<String,Object> row:rows){
                     String s="id="+IanConvert.ToLong(row.get("id"))+"\t";
@@ -102,6 +103,22 @@ public class IanMySQLTest {
                     s+="level="+IanConvert.ToLong(row.get("level"))+"\t";
                     s+="ctime="+IanConvert.FormatMySQLDate(IanConvert.ToDate(row.get("ctime")))+"\t";
                     s+="etime="+IanConvert.FormatMySQLDate(IanConvert.ToDate(row.get("etime")));
+                    System.out.println(s);
+                }
+            }
+            System.out.println("=======================================");
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                sql2.Sql="select * from temp_1";
+                sql2.SetOrderBy("id desc");
+                sql2.SetLimit("2,10");
+                List<TTemp_1> rs=sql2.GetList(TTemp_1.class);
+                for(TTemp_1 r:rs){
+                    String s="id="+r.id+"\t";
+                    s+="name="+r.name+"\t";
+                    s+="level="+r.level+"\t";
+                    s+="ctime="+IanConvert.FormatDate(r.ctime,"yyyy-MM-dd HH:mm:ss")+"\t";
+                    s+="etime="+IanConvert.FormatDate(r.etime,"yyyy-MM-dd HH:mm:ss");
                     System.out.println(s);
                 }
             }

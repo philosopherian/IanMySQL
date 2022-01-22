@@ -3,12 +3,14 @@ package pro.ianchen;
 
 /**
  * 自定义键值对
- * @param <K> 键
- * @param <V> 值
+ * custom key value pair
+ * @param <K> 键 key
+ * @param <V> 值 value
  */
 public class IanKeyPair<K,V> {
     /**
      * 构造函数
+     * constructor
      */
     public IanKeyPair(){
 
@@ -16,33 +18,36 @@ public class IanKeyPair<K,V> {
 
     /**
      * 构造函数
-     * @param k 键
-     * @param v 值
+     * constructor
+     * @param k 键 key
+     * @param v 值 value
      */
     public IanKeyPair(K k,V v){
         this.key=k;
         this.value=v;
     }
     /**
-     * 键
+     * 键 key
      */
     public K key;
 
     /**
      * 获取键
-     * @return
+     * get key
+     * @return key
      */
     public K getKey(){
         return this.key;
     }
     /**
-     * 值
+     * 值 value
      */
     public V value;
 
     /**
      * 获取值
-     * @return
+     * get value
+     * @return value
      */
     public V getValue(){
         return this.value;

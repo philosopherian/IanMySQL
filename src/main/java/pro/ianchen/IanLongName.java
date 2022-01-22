@@ -5,39 +5,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 整型和名称对应项
+ * 长整型和名称对应项
+ * the pair of id and name field
+ * id is long value
+ * and
+ * name is string value
  */
 public class IanLongName implements Serializable {
     /**
-     * 整型值
+     * 长整型值
+     * id value
      */
     public long id=0;
 
     /**
-     * 取整型值
-     * @return 整型值
+     * 取长整型值
+     * get id value
+     * @return 长整型值 long value
      */
     public long getId(){return this.id;}
     /**
      * 名称值
+     * name value
      */
     public String name="";
 
     /**
      * 取名称值
-     * @return 取名称值
+     * get name value
+     * @return 名称值 name value
      */
     public String getName(){return this.name;}
 
     /**
      * 构造函数
+     * constructor
      */
     public IanLongName(){}
 
     /**
      * 构造函数
-     * @param vid 编号
-     * @param vname 名称
+     * constructor
+     * @param vid 编号 id value
+     * @param vname 名称 name value
      */
     public IanLongName(long vid,String vname){
         this.id=vid;
@@ -46,9 +56,10 @@ public class IanLongName implements Serializable {
 
     /**
      * 根据名称在列表中获取编号
-     * @param ds 列表
-     * @param vName 名称
-     * @return 编号
+     * get id by name in the IanLongName list
+     * @param ds 列表 the IanLongName list
+     * @param vName 名称 name value
+     * @return 编号 id value
      * @throws Exception
      */
     public static long getIdByName(List<IanLongName> ds,String vName) throws Exception {
@@ -62,10 +73,12 @@ public class IanLongName implements Serializable {
 
     /**
      * 根据名称在列表中获取编号
-     * @param ds 列表
-     * @param vName 名称
-     * @param defValue 找不到时的默认值
-     * @return 编号
+     * get id by name in the IanLongName list
+     * if can not find the name then return default value
+     * @param ds 列表 the IanLongName list
+     * @param vName 名称 name
+     * @param defValue 找不到时的默认值 default id value
+     * @return 编号 id value
      * @throws Exception
      */
     public static long getIdByName(List<IanLongName> ds,String vName,long defValue) throws Exception {
@@ -79,9 +92,10 @@ public class IanLongName implements Serializable {
 
     /**
      * 根据值在列表中获取名称
-     * @param ds 列表
-     * @param vId 值
-     * @return 名称
+     * get name by id in the IanLongName list
+     * @param ds 列表 the IanLongName list
+     * @param vId 值 long value
+     * @return 名称 name value
      * @throws Exception
      */
     public static String getNameById(List<IanLongName> ds,long vId) throws Exception {
@@ -95,10 +109,12 @@ public class IanLongName implements Serializable {
 
     /**
      * 根据名称在列表中获取编号
-     * @param ds 列表
-     * @param vId 值
-     * @param defValue 找不到时的默认值
-     * @return 名称
+     * get name by id in the IanLongName list
+     * if can not find the id then return default value
+     * @param ds 列表 the IanLongName list
+     * @param vId 值 id value
+     * @param defValue 找不到时的默认值 default name value
+     * @return 名称 name value
      * @throws Exception
      */
     public static String getNameById(List<IanLongName> ds,long vId,String defValue) throws Exception {

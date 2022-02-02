@@ -6,38 +6,45 @@ import java.util.List;
 
 /**
  * 字符型和名称对应项
+ * the string value and name pairs
  */
 public class IanStringName implements Serializable {
     /**
      * 字符型值
+     * id value
      */
     public String id="";
 
     /**
      * 取字符型值
-     * @return 字符型值
+     * get the value of field id
+     * @return 字符型值 string value
      */
     public String getId(){return this.id;}
     /**
      * 名称值
+     * name value
      */
     public String name="";
 
     /**
      * 取名称值
-     * @return 取名称值
+     * get the value of field name
+     * @return 取名称值 string name
      */
     public String getName(){return this.name;}
 
     /**
      * 构造函数
+     * constructor
      */
     public IanStringName(){}
 
     /**
      * 构造函数
-     * @param vid 编号
-     * @param vname 名称
+     * constructor
+     * @param vid 编号 id
+     * @param vname 名称 name
      */
     public IanStringName(String vid,String vname){
         this.id=vid;
@@ -46,9 +53,10 @@ public class IanStringName implements Serializable {
 
     /**
      * 根据名称在列表中获取编号
-     * @param ds 列表
-     * @param vName 名称
-     * @return 编号
+     * get id value in the IanStringName list by name
+     * @param ds 列表 IanStringName list
+     * @param vName 名称 name
+     * @return 编号 id
      * @throws Exception
      */
     public static String getIdByName(List<IanStringName> ds,String vName) throws Exception {
@@ -62,10 +70,11 @@ public class IanStringName implements Serializable {
 
     /**
      * 根据名称在列表中获取编号
-     * @param ds 列表
-     * @param vName 名称
-     * @param defValue 找不到时的默认值
-     * @return 编号
+     * get id value in the IanStringName list by name
+     * @param ds 列表 IanStringName list
+     * @param vName 名称 name
+     * @param defValue 找不到时的默认值 the default value will return when the name not found
+     * @return 编号 id
      * @throws Exception
      */
     public static String getIdByName(List<IanStringName> ds,String vName,String defValue) throws Exception {

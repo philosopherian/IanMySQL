@@ -2,6 +2,7 @@ package pro.ianchen;
 
 /**
  * 存储过程参数调用类型
+ * the parameter called mode in procedure
  */
 public enum IanProcedureParameterFlagEnum {
     @IanEnumLabel(value=0,label="输入参数")

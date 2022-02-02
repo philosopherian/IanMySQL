@@ -619,7 +619,7 @@ public class IanMySQL {
      * 如果原先已经开启事务（BeginTransaction），则批处理不做自动提交，由外部统一管理事务提交与回滚
      * if start transaction (BeginTransaction) then the process will no auto commit, and the transaction will be managed by main IanMySQL instance
      * @param ps 批量参数数据 the hashmap data
-     * @param commitRows 每多少条提交一次，对于已开启事务的处理，没有作用 if 
+     * @param commitRows 每多少条提交一次，对于已开启事务的处理，没有作用 how many records will cause commit transaction,it doesn't work when deal without transaction
      * @throws Exception
      */
     public void BatchAdd(List<HashMap<String, Object>> ps, int commitRows) throws Exception {
@@ -694,10 +694,12 @@ public class IanMySQL {
 
     /**
      * 按SQL语句获取T的列表
+     * it will execute the sql script and convert the result to the T list
      * T必须有无参数的构造函数
-     * @param t T的类型
-     * @param <T> T的泛型
-     * @return T的列表
+     * T must has a no parameters constructor
+     * @param t T的类型 generic type T
+     * @param <T> T的泛型 generic type T
+     * @return T的列表 the list of T
      * @throws Exception
      */
     public <T> List<T> GetList(Class<T> t) throws Exception {
@@ -706,11 +708,18 @@ public class IanMySQL {
 
     /**
      * 按SQL语句获取T的列表
+     * it will execute the sql script and convert the result to the T list
      * T必须有无参数的构造函数
+     * T must has a no parameters constructor
      * @param replaceCols 用于字段替换的对应字典表 Key是类的字段名，Value是数据库查询结果里的列名
-     * @param t T的类型 如果字段为枚举类型，仅对使用EnumLabel定义value值得字段进行赋值处理
-     * @param <T> T的泛型
-     * @return T的列表
+     *                    the dictionary to map the column relation
+     *                    dictionary key is class field
+     *                    dictionary value is the field in the query result from database
+     * @param t T的类型 如果字段为枚举类型，仅对使用EnumLabel定义value值的字段进行赋值处理
+     *          generic type T
+     *          if field is Enum type, the value (database table field) will be dealed only in the case that the class field used EnumLabel annotated
+     * @param <T> T的泛型 generic type T
+     * @return T的列表 the list of T
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
@@ -894,7 +903,9 @@ public class IanMySQL {
 
     /**
      * 按SQL语句获取查询结果列表
+     * it will execute the sql script and convert the result to the hashmap list
      * @return 查询结果列表，每一行为一个HashMap，以查询字段名为Key，值为Value
+     *         the query result list,every row is a hashmap ,and the query field name is hashmap key, the corresponding query field value is hashmap value
      * @throws Exception
      */
     public List<HashMap<String, Object>> GetList() throws Exception {
@@ -953,7 +964,8 @@ public class IanMySQL {
 
     /**
      * 查询一条一个整型结果
-     * @return 整型结果
+     * query result is a single int value
+     * @return 整型结果 int value
      * @throws Exception
      */
     public int SelectInt() throws Exception {
@@ -1000,7 +1012,8 @@ public class IanMySQL {
 
     /**
      * 查询一条一个字符串结果
-     * @return 字符串结果
+     * query result is a single string value
+     * @return 字符串结果 string value
      * @throws Exception
      */
     public String SelectString() throws Exception {
@@ -1047,9 +1060,10 @@ public class IanMySQL {
 
     /**
      * 调用存储过程
-     * @param strProcedureName 存储过程名
-     * @param parameterList 参数类型列表
-     * @return 存储过程返回
+     * call the database procedure
+     * @param strProcedureName 存储过程名 procedure name
+     * @param parameterList 参数类型列表 procedure parameters list
+     * @return 存储过程返回 the result of the procedure return
      */
     public HashMap<String, Object> ExecProcedure(String strProcedureName, List<IanProcedureParameter> parameterList) throws Exception {
         if(parameterList==null) parameterList=new ArrayList<IanProcedureParameter>();
@@ -1111,6 +1125,7 @@ public class IanMySQL {
 
     /**
      * 开始事务
+     * start transaction
      */
     public void BeginTransaction() throws SQLException {
         this.Connection.setAutoCommit(false);
@@ -1119,6 +1134,7 @@ public class IanMySQL {
 
     /**
      * 提交事务
+     * commit transaction
      * @throws SQLException
      */
     public void Commit() throws SQLException {
@@ -1129,6 +1145,7 @@ public class IanMySQL {
 
     /**
      * 回滚事务
+     * rollback transaction
      * @throws SQLException
      */
     public void Rollback() throws SQLException {

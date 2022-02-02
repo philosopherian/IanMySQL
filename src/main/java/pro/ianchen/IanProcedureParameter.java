@@ -6,30 +6,37 @@ import java.util.List;
 
 /**
  * 存储过程调用参数
+ * the parameter info of the procedure parameter
  */
 public class IanProcedureParameter {
     /**
      * 参数名
+     * parameter name
      */
     public String name="";
     /**
      * 参数类型
+     * parameter type
      */
     public IanProcedureParameterFlagEnum flag= IanProcedureParameterFlagEnum.IN;
 
     /**
      * 数据类型
+     * data type
      * 仅在flag为INOUT或OUT时使用
+     * only used when the flag is INOUT or OUT
      */
     public int type= Types.INTEGER;
     /**
      * 参数值
+     * parameter value
      */
     public Object value=null;
 
     /**
      * 获取描述信息
-     * @return 描述信息
+     * get the description of the parameter
+     * @return 描述信息 the description
      */
     public String getLabel() throws Exception {
         String label="";
@@ -177,6 +184,7 @@ public class IanProcedureParameter {
 
     /**
      * 获取一组参数说明
+     * get a group parameters description
      * @param ps 参数列表
      */
     public static String getLabels(List<IanProcedureParameter> ps) throws Exception {

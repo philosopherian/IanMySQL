@@ -5,15 +5,17 @@ import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * MySql数据库连接数据源
+ * MySql database source (database pool)
  */
 public class IanMySQLDataSource {
 
     /**
      * 以Hikari方式获取数据库连接池数据源
-     * @param vJdbcUrl jdbc连接
-     * @param vUserName 账号
-     * @param vPassword 密码
-     * @return Hikari数据库连接池数据源
+     * get the database source (database pool) used Hikari mode
+     * @param vJdbcUrl jdbc连接 jdbc connection url
+     * @param vUserName 账号 the account of database connection
+     * @param vPassword 密码 the password of database connection
+     * @return Hikari数据库连接池数据源 the database source (Hikari,database pool)
      * @throws Exception
      */
     public HikariDataSource GetHikariDataSource(String vJdbcUrl,String vUserName,String vPassword) throws Exception{
@@ -22,11 +24,12 @@ public class IanMySQLDataSource {
 
     /**
      * 以Hikari方式获取数据库连接池数据源
-     * @param vJdbcUrl jdbc连接
-     * @param vUserName 账号
-     * @param vPassword 密码
-     * @param vCharset 字符集
-     * @return Hikari数据库连接池数据源
+     * get the database source (database pool) used Hikari mode
+     * @param vJdbcUrl jdbc连接 jdbc connection url
+     * @param vUserName 账号 the account of database connection
+     * @param vPassword 密码 the password of database connection
+     * @param vCharset 字符集 charset
+     * @return Hikari数据库连接池数据源  the database source (Hikari,database pool)
      * @throws Exception
      */
     public HikariDataSource GetHikariDataSource(String vJdbcUrl,String vUserName,String vPassword,String vCharset) throws Exception {
@@ -71,7 +74,8 @@ public class IanMySQLDataSource {
 
     /**
      * 关闭Hikari数据库连接池数据源
-     * @param ds Hikari数据库连接池数据源
+     * close the database source (Hikari,database pool)
+     * @param ds Hikari数据库连接池数据源 the database source  (Hikari,database pool)
      */
     public void CloseDataSource(HikariDataSource ds){
         if(ds!=null){

@@ -21,7 +21,7 @@ public class IanMySQLTest {
     public void setUp() {
         try{
             IanMySQLDataSource ds=new IanMySQLDataSource();
-            this._dataSource=ds.GetHikariDataSource("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&serverTimezone=Asia/Shanghai","test","test");
+            this._dataSource=ds.GetHikariDataSource("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&serverTimezone=Asia/Shanghai","test","Cs@123456");
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -168,7 +168,7 @@ public class IanMySQLTest {
                     System.out.println(s);
                 }
             }
-            //throw new Exception("测试的错误，验证是否会回滚数据");
+            if(mid%2==0) throw new Exception("测试的错误，验证是否会回滚数据");
             sql.Commit();
             System.out.println("提交数据");
             {

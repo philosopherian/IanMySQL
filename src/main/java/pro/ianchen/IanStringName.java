@@ -89,9 +89,10 @@ public class IanStringName implements Serializable {
 
     /**
      * 根据值在列表中获取名称
-     * @param ds 列表
-     * @param vId 值
-     * @return 名称
+     * get name value in the IanStringName list by id
+     * @param ds 列表 IanStringName list
+     * @param vId 值 id
+     * @return 名称 name
      * @throws Exception
      */
     public static String getNameById(List<IanStringName> ds,String vId) throws Exception {
@@ -105,10 +106,11 @@ public class IanStringName implements Serializable {
 
     /**
      * 根据名称在列表中获取编号
-     * @param ds 列表
-     * @param vId 值
-     * @param defValue 找不到时的默认值
-     * @return 名称
+     * get id value in the IanStringName list by name
+     * @param ds 列表 IanStringName list
+     * @param vId 值 id
+     * @param defValue 找不到时的默认值 the default value return when name not found
+     * @return 名称 name
      * @throws Exception
      */
     public static String getNameById(List<IanStringName> ds,String vId,String defValue) throws Exception {

@@ -5,11 +5,13 @@ import java.util.regex.Pattern;
 
 /**
  * Ian的字符串操作类
+ * Ian string operator class
  */
 public class IanStringTool {
     /**
      * 获取当前时间戳，单位秒
-     * @return
+     * get current timestamp, unit is second
+     * @return timestamp's long value
      */
     public static long getCurrentTimestamp() {
         return System.currentTimeMillis()/1000;
@@ -17,7 +19,8 @@ public class IanStringTool {
 
     /**
      * 获取当前时间戳，单位毫秒
-     * @return
+     * get current timestamp, unit is millisecond
+     * @return timestamp's long value
      */
     public static long getCurrentTimestampMs() {
         return System.currentTimeMillis();
@@ -25,7 +28,8 @@ public class IanStringTool {
 
     /**
      * 与JS兼容的最大日期3000-1-1
-     * @return
+     * the max date (3000-1-1), it is compatible with the javascript
+     * @return the max date (3000-1-1)
      */
     public static Date getJavascriptMaxDateTime(){
         Calendar c= Calendar.getInstance();
@@ -41,7 +45,8 @@ public class IanStringTool {
 
     /**
      * 与JS兼容的最大日期3000-1-1 MySQL写入值
-     * @return 与JS兼容的最大日期MySQL写入值
+     * the max date (3000-1-1， MySQL format write value), it is compatible with the javascript
+     * @return 与JS兼容的最大日期MySQL写入值 the max date (3000-1-1， MySQL format write value)
      */
     public static String getMySQLJavascriptMaxDateTime(){
         return IanConvert.FormatMySQLDate(IanStringTool.getJavascriptMaxDateTime());
@@ -49,7 +54,8 @@ public class IanStringTool {
 
     /**
      *与JS兼容的最小日期1970-1-1
-     * @return
+     * the min date (1970-1-1), it is compatible with the javascript
+     * @return the min date (1970-1-1)
      */
     public static Date getJavascriptMinDateTime(){
         Calendar c= Calendar.getInstance();
@@ -65,7 +71,8 @@ public class IanStringTool {
 
     /**
      * 与JS兼容的最小日期1970-1-1 MySQL写入值
-     * @return 与JS兼容的最小日期MySQL写入值
+     * the min date (1970-1-1， MySQL format write value), it is compatible with the javascript
+     * @return 与JS兼容的最小日期MySQL写入值 the min date (1970-1-1， MySQL format write value)
      */
     public static String getMySQLJavascriptMinDateTime(){
         return IanConvert.FormatMySQLDate(IanStringTool.getJavascriptMinDateTime());
@@ -73,8 +80,9 @@ public class IanStringTool {
 
     /**
      * 按时间获取该天零点
-     * @param d 输入时间
-     * @return 输入时间对应的该天零点
+     * get the date (the time is zero of the date)
+     * @param d 输入时间 the input date value
+     * @return 输入时间对应的该天零点 the time is zero of the input date
      * @throws Exception
      */
     public static Date GetDate(Date d) throws Exception {
@@ -83,7 +91,8 @@ public class IanStringTool {
 
     /**
      * 获取当前时间
-     * @return 当前时间
+     * get the current time
+     * @return 当前时间 the current time
      */
     public static Date Now(){
         return new Date(IanStringTool.getCurrentTimestampMs());
@@ -91,7 +100,8 @@ public class IanStringTool {
 
     /**
      * 获取当天零点
-     * @return 当天零点
+     * get the time zero of today
+     * @return 当天零点 time zero of today
      * @throws Exception
      */
     public static Date Today() throws Exception {
@@ -100,24 +110,27 @@ public class IanStringTool {
 
     /**
      * 获取当前时间的MySQL写入值
-     * @return 当前时间的MySQL写入值
+     * get the current time that can be writed to MySQL
+     * @return 当前时间的MySQL写入值 the current time that can be writed to MySQL
      */
     public static String MySQLNow(){
         return IanConvert.FormatMySQLDate(IanStringTool.Now());
     }
 
     /**
-     *
-     * @return 获取当天零点的MySQL写入值
+     * get the time zero of today that can be writed to MySQL
+     * @return 获取当天零点的MySQL写入值 the time zero of today that can be writed to MySQL
      * @throws Exception
      */
     public static String MySQLToday() throws Exception { return IanConvert.FormatMySQLDate(IanStringTool.Today());}
 
     /**
      * 指定时间增减豪秒数
-     * @param d1
-     * @param millis
-     * @return
+     * get the time which increase or decrease the specified number of milliseconds
+     * the specified number of milliseconds is int value
+     * @param d1 the input time
+     * @param millis the specified number of milliseconds, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddMillis(Date d1, int millis){
         Calendar c= Calendar.getInstance();
@@ -128,9 +141,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减豪秒数
-     * @param d1
-     * @param millis
-     * @return
+     * get the time which increase or decrease the specified number of milliseconds
+     * the specified number of milliseconds is long value
+     * @param d1 the input time
+     * @param millis the specified number of milliseconds, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddMillis(Date d1, long millis){
         Calendar c= Calendar.getInstance();
@@ -141,9 +156,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减秒数
-     * @param d1
-     * @param seconds
-     * @return
+     * get the time which increase or decrease the specified number of seconds
+     * the specified number of seconds is int value
+     * @param d1 the input time
+     * @param seconds the specified number of seconds, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddSeconds(Date d1, int seconds){
         Calendar c= Calendar.getInstance();
@@ -154,9 +171,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减秒数
-     * @param d1
-     * @param seconds
-     * @return
+     * get the time which increase or decrease the specified number of seconds
+     * the specified number of seconds is long value
+     * @param d1 the input time
+     * @param seconds the specified number of seconds, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddSeconds(Date d1, long seconds){
         Calendar c= Calendar.getInstance();
@@ -167,9 +186,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减分钟数
-     * @param d1
-     * @param minutes
-     * @return
+     * get the time which increase or decrease the specified number of minutes
+     * the specified number of minutes is int value
+     * @param d1 the input time
+     * @param minutes the specified number of minutes, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddMinutes(Date d1, int minutes){
         Calendar c= Calendar.getInstance();
@@ -180,9 +201,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减分钟数
-     * @param d1
-     * @param minutes
-     * @return
+     * get the time which increase or decrease the specified number of minutes
+     * the specified number of minutes is long value
+     * @param d1 the input time
+     * @param minutes the specified number of minutes, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddMinutes(Date d1, long minutes){
         Calendar c= Calendar.getInstance();
@@ -193,9 +216,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减小时数
-     * @param d1
-     * @param hours
-     * @return
+     * get the time which increase or decrease the specified number of hours
+     * the specified number of hours is int value
+     * @param d1 the input time
+     * @param hours the specified number of hours, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddHour(Date d1, int hours){
         Calendar c= Calendar.getInstance();
@@ -206,9 +231,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减小时数
-     * @param d1
-     * @param hours
-     * @return
+     * get the time which increase or decrease the specified number of hours
+     * the specified number of hours is long value
+     * @param d1 the input time
+     * @param hours the specified number of hours, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddHour(Date d1, long hours){
         Calendar c= Calendar.getInstance();
@@ -219,9 +246,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减天数
-     * @param d1 时间
-     * @param days 天数
-     * @return 计算结果
+     * get the time which increase or decrease the specified number of days
+     * the specified number of days is int value
+     * @param d1 the input time
+     * @param days the specified number of days, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddDays(Date d1, int days){
         Calendar c= Calendar.getInstance();
@@ -232,9 +261,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减天数
-     * @param d1 时间
-     * @param days 天数
-     * @return 计算结果
+     * get the time which increase or decrease the specified number of days
+     * the specified number of days is long value
+     * @param d1 the input time
+     * @param days the specified number of days, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddDays(Date d1, long days){
         return IanStringTool.AddDays(d1,(int)days);
@@ -242,9 +273,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减月数
-     * @param d1 时间
-     * @param months 月数
-     * @return 计算结果
+     * get the time which increase or decrease the specified number of months
+     * the specified number of months is long value
+     * @param d1 the input time
+     * @param months the specified number of months, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddMonths(Date d1, long months){
         return IanStringTool.AddMonths(d1,(int)months);
@@ -252,9 +285,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减月数
-     * @param d1 时间
-     * @param months 月数
-     * @return 计算结果
+     * get the time which increase or decrease the specified number of months
+     * the specified number of months is int value
+     * @param d1 the input time
+     * @param months the specified number of months, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddMonths(Date d1, int months){
         Calendar c= Calendar.getInstance();
@@ -265,9 +300,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减年数
-     * @param d1 时间
-     * @param years 年数
-     * @return 计算结果
+     * get the time which increase or decrease the specified number of years
+     * the specified number of years is long value
+     * @param d1 the input time
+     * @param years the specified number of years, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddYears(Date d1, long years){
         return IanStringTool.AddYears(d1,(int)years);
@@ -275,9 +312,11 @@ public class IanStringTool {
 
     /**
      * 指定时间增减年数
-     * @param d1 时间
-     * @param years 年数
-     * @return 计算结果
+     * get the time which increase or decrease the specified number of years
+     * the specified number of years is int value
+     * @param d1 the input time
+     * @param years the specified number of years, a positive number is an increase and a negative number is a decrease
+     * @return the calculated result
      */
     public static Date AddYears(Date d1, int years){
         Calendar c= Calendar.getInstance();
@@ -288,9 +327,12 @@ public class IanStringTool {
 
     /**
      * 检测值
-     * @param value 值
-     * @param valueName 值名称
-     * @return 检测处理后的值
+     * check whether the input value is empty
+     * if the input value is empty then will throw out the exception with the message( the input value name can not be empty)
+     * if the input value is not empty the the input value will trim the left and right blank.
+     * @param value 值 the input value
+     * @param valueName 值名称 the input value name
+     * @return 检测处理后的值 the result of checked and dealed
      * @throws Exception
      */
     public static String Check(String value, String valueName) throws Exception {
@@ -302,10 +344,17 @@ public class IanStringTool {
 
     /**
      * 处理包含在一组值中的特定值
-     * @param value 被处理特定值
-     * @param defValue 特定值不在组值中时，默认返回的值，这个值必须也是组值中的一个
-     * @param values 组值
-     * @return 处理后的特定值
+     * deal the input value
+     * if no values is specified then will be handled according to the following logic.
+     *   if the input value is empty then return default value (parameter defValue).
+     *   if the input value is not empty then return the value after be trim the left and right blank.
+     * if values is specified then will be handled according to the following logic.
+     *   if the input value is not in the parameter values then return  the value after be trim the left and right blank.
+     *   if the input value is in the parameter values then return the input value.
+     * @param value 被处理特定值 the input value
+     * @param defValue 特定值不在组值中时，默认返回的值，这个值必须也是组值中的一个 default value
+     * @param values 组值 the value array which use to check the value range
+     * @return 处理后的特定值 the value after be dealed
      * @throws Exception
      */
     public static String Deal(String value, String defValue, String... values) throws Exception {
@@ -330,9 +379,12 @@ public class IanStringTool {
 
     /**
      * 处理值
-     * @param value 值
-     * @param defValue 默认值
-     * @return 处理后的值
+     * deal the input value
+     * if the input value is empty then return default value (parameter defValue).
+     * if the input value is not empty then return the value after be trim the left and right blank.
+     * @param value 值 the input value
+     * @param defValue 默认值 the default value
+     * @return 处理后的值 the value after be dealed
      */
     public static String Deal(String value, String defValue){
         if(value==null) value="";
@@ -343,7 +395,8 @@ public class IanStringTool {
 
     /**
      * 生成Guid值
-     * @return Guid
+     * generate the global unique id
+     * @return Guid the global unique id
      */
     public static String Guid(){
         UUID uuid= UUID.randomUUID();
@@ -352,7 +405,8 @@ public class IanStringTool {
 
     /**
      * 生成Guid值(不含-)
-     * @return Guid(不含-)
+     * generate the global unique id(exclude "-")
+     * @return Guid(不含-) the global unique id(exclude "-")
      */
     public static String Guid2(){
         return IanStringTool.Guid().replace("-","");
@@ -360,6 +414,7 @@ public class IanStringTool {
 
     /**
      * 生成为0的Guid值
+     * generate the empty global unique id
      * @return 00000000-0000-0000-0000-000000000000
      */
     public static String GuidEmpty(){
@@ -368,8 +423,9 @@ public class IanStringTool {
 
     /**
      * 是否是邮件格式
-     * @param v 字符串
-     * @return 是否
+     * check the input value is a legal email address
+     * @param v 字符串 the input value
+     * @return 是否 check result
      */
     public static boolean IsMail(String v){
         v=IanStringTool.Deal(v,"");
@@ -378,8 +434,9 @@ public class IanStringTool {
 
     /**
      * 是否是整型
-     * @param v 整型字符串
-     * @return 是否
+     * check the input value is a legal int value
+     * @param v 整型字符串 the input value
+     * @return 是否 check result
      * @throws Exception
      */
     public static boolean IsInt(String v) throws Exception {
@@ -388,9 +445,10 @@ public class IanStringTool {
     }
 
     /**
-     * 是否是整型
-     * @param v 整型字符串
-     * @return 是否
+     * 是否是浮点型
+     * check the input value is a legal float value
+     * @param v 浮点型字符串 the input value
+     * @return 是否 check result
      * @throws Exception
      */
     public static boolean IsFloat(String v) throws Exception {
@@ -400,8 +458,9 @@ public class IanStringTool {
 
     /**
      * 获取完整的错误信息
-     * @param ex 错误
-     * @return 错误信息
+     * get the full exception information
+     * @param ex 错误 exception
+     * @return 错误信息 the exception informtation
      */
     public static String GetFullExceptionInfo(Exception ex){
         if(ex==null) return "";
@@ -412,9 +471,10 @@ public class IanStringTool {
     }
 
     /**
-     * 获取完整的错误信息
-     * @param ex 错误
-     * @return 错误堆栈信息
+     * 获取完整的错误堆栈信息
+     * get the full exception stack information
+     * @param ex 错误 exception
+     * @return 错误堆栈信息 exception stack information
      */
     public static String GetExceptionStackInfo(Exception ex){
         if(ex==null) return "";

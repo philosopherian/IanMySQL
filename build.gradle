@@ -15,6 +15,9 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'com.twitter:twitter-server-slf4j-log4j12_2.11:19.9.0'
+    compile 'com.twitter:util-slf4j-api_2.11:19.9.0'
+    compile 'log4j:log4j:1.2.16'
     compile 'mysql:mysql-connector-java:8.0.19'
     compile 'com.zaxxer:HikariCP:4.0.1'
 }

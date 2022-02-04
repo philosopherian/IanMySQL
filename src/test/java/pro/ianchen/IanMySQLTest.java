@@ -6,9 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -167,7 +168,9 @@ public class IanMySQLTest {
                     System.out.println(s);
                 }
             }
+            //throw new Exception("测试的错误，验证是否会回滚数据");
             sql.Commit();
+            System.out.println("提交数据");
             {
                 IanMySQL sql2=sql.CreateIanMySql();
                 sql2.Sql="select * from temp_1 where id=@id";
@@ -205,17 +208,37 @@ public class IanMySQLTest {
             }
             {
                 IanMySQL sql2=sql.CreateIanMySql();
-                String s="DELIMITER $$ " +
-                        "CREATE PROCEDURE p_test (in v_value int,out v_result int)" +
+                String s="CREATE PROCEDURE p_test (in v_value int,out v_result int)" +
                         "BEGIN " +
                         " set v_result = v_value * 2; " +
-                        "END$$ " +
-                        "DELIMITER ";
+                        "END";
                 sql2.Sql=s;
                 sql2.ExecuteCmd();
             }
             {
-
+                List<IanProcedureParameter> ps=new ArrayList<IanProcedureParameter>();
+                {
+                    IanProcedureParameter p=new IanProcedureParameter();
+                    p.name="v_value";
+                    p.flag= IanProcedureParameterFlagEnum.IN;
+                    p.type= Types.INTEGER;
+                    p.value=10;
+                    ps.add(p);
+                }
+                {
+                    IanProcedureParameter p=new IanProcedureParameter();
+                    p.name="v_result";
+                    p.flag= IanProcedureParameterFlagEnum.OUT;
+                    p.type= Types.INTEGER;
+                    p.value=0;
+                    ps.add(p);
+                }
+                {
+                    IanMySQL sql2=sql.CreateIanMySql();
+                    HashMap<String, Object> rs=sql2.ExecProcedure("p_test",ps);
+                    int v_result= Integer.parseInt(String.valueOf(rs.get("v_result")));
+                    System.out.println("call procedure p_test return "+v_result);
+                }
             }
         }catch (Exception ex){
             ex.printStackTrace();

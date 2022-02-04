@@ -131,4 +131,99 @@ public class IanMySQLTest {
             }
         }
     }
+
+    @Test
+    public void doTransactionTest() throws SQLException {
+        IanMySQL sql=null;
+        try{
+            sql=new IanMySQL(this._dataSource);
+            sql.BeginTransaction();
+            long mid=0;
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                sql2.Sql="select ifnull(max(id),0) from temp_1";
+                mid=sql2.SelectInt();
+                mid++;
+            }
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                sql2.Sql="insert into temp_1 (id,name,level) values (@id,@name,@level)";
+                sql2.AddSqlParamter("@id",mid);
+                sql2.AddSqlParamter("@name","Name"+mid);
+                sql2.AddSqlParamter("@level",mid%3);
+                sql2.ExecuteCmd();
+            }
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                sql2.Sql="select * from temp_1 where id=@id";
+                sql2.AddSqlParamter("@id",mid);
+                List<HashMap<String,Object>> rs=sql2.GetList();
+                System.out.println("before commit");
+                for(int i=0;i<rs.size();i++){
+                    String s="";
+                    for(String colname:rs.get(i).keySet()){
+                        s+="col "+colname+" = "+IanConvert.ToString(rs.get(i).get(colname));
+                    }
+                    System.out.println(s);
+                }
+            }
+            sql.Commit();
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                sql2.Sql="select * from temp_1 where id=@id";
+                sql2.AddSqlParamter("@id",mid);
+                List<HashMap<String,Object>> rs=sql2.GetList();
+                System.out.println("after commit");
+                for(int i=0;i<rs.size();i++){
+                    String s="";
+                    for(String colname:rs.get(i).keySet()){
+                        s+="col "+colname+" = "+IanConvert.ToString(rs.get(i).get(colname));
+                    }
+                    System.out.println(s);
+                }
+            }
+       }catch (Exception ex){
+           ex.printStackTrace();
+           sql.Rollback();
+       }finally {
+           if(sql!=null){
+               sql.Close();
+               sql=null;
+           }
+       }
+    }
+
+    @Test
+    public void doProcedureTest() throws SQLException {
+        IanMySQL sql=null;
+        try{
+             sql=new IanMySQL(this._dataSource);
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                sql2.Sql="drop procedure if exists p_test";
+                sql2.ExecuteCmd();
+            }
+            {
+                IanMySQL sql2=sql.CreateIanMySql();
+                String s="DELIMITER $$ " +
+                        "CREATE PROCEDURE p_test (in v_value int,out v_result int)" +
+                        "BEGIN " +
+                        " set v_result = v_value * 2; " +
+                        "END$$ " +
+                        "DELIMITER ";
+                sql2.Sql=s;
+                sql2.ExecuteCmd();
+            }
+            {
+
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }finally {
+            if(sql!=null){
+                sql.Close();
+                sql=null;
+            }
+        }
+    }
 }

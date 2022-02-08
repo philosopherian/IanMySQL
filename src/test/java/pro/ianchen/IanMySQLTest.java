@@ -168,9 +168,9 @@ public class IanMySQLTest {
                     System.out.println(s);
                 }
             }
-            if(mid%2==0) throw new Exception("测试的错误，验证是否会回滚数据");
+            if(mid%2==0) throw new Exception("planted error, test rollback mechanism");
             sql.Commit();
-            System.out.println("提交数据");
+            System.out.println("submit data");
             {
                 IanMySQL sql2=sql.CreateIanMySql();
                 sql2.Sql="select * from temp_1 where id=@id";

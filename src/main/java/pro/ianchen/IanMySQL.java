@@ -9,64 +9,56 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Ian的MySQL操作类
- * Ian's MySQL operater
+ * MySQL operator prototype
  */
 public class IanMySQL {
     /**
-     * 日志
      * log delegate function
      */
     public Consumer<String> Log=null;
 
     /**
-     * 日志普通信息
-     * write normal log
-     * @param s 日志内容 log content
+     * normal log
+     * @param s log content
      */
     public void LogInfo(String s){
         if(this.Log!=null){
-            String log=IanConvert.FormatDate(IanStringTool.Now(),"yyyyMMddHHmmssSSS")+"\t普通日志\t"+IanStringTool.Deal(s,"");
+            String log=IanConvert.FormatDate(IanStringTool.Now(),"yyyyMMddHHmmssSSS")+"\tnormalLog\t"+IanStringTool.Deal(s,"");
             this.Log.accept(log);
         }
     }
 
 
     /**
-     * 日志错误信息
-     * write error log
-     * @param s 日志信息 log content
+     * error log
+     * @param s log content
      */
     void LogError(String s){
         if(this.Log!=null){
-            String log=IanConvert.FormatDate(IanStringTool.Now(),"yyyyMMddHHmmssSSS")+"\t错误日志\t"+IanStringTool.Deal(s,"");
+            String log=IanConvert.FormatDate(IanStringTool.Now(),"yyyyMMddHHmmssSSS")+"\terrorLog\t"+IanStringTool.Deal(s,"");
             this.Log.accept(log);
         }
     }
 
     /**
-     * 实例全局号
-     * the instance's guid
-     * used to distinguish different log contents in a multithreaded environment
+     * mark guid
+     * distinguish different log contents in multithreaded environment
      */
     public String Guid= IanStringTool.Guid2();
 
     /**
-     * 数据库连接源
      * database source
      */
     public javax.sql.DataSource DataSource=null;
 
     /**
-     * 数据库连接
      * database connection
      */
     public java.sql.Connection Connection=null;
 
     /**
-     * 是否自动提交
-     * get whether the database operation is automatically committed
-     * @return 是否 true or false
+     * confirm if database operation is automatically committed
+     * @return true or false
      */
     public boolean IsAutoCommit() throws SQLException {
         if(this.Connection==null) return true;
@@ -74,63 +66,55 @@ public class IanMySQL {
     }
 
     /**
-     * 数据连接超时时间秒数
-     * the database connection timeout seconds
+     * database connection timeout limit
      */
     public int SQLTimeOut = 720;
 
     /**
-     * 查询结果返回列
-     * the columns information in the query result
+     * query result columns
      */
     public Map<Integer, String> QueryResultColumns=new HashMap<Integer, String>();
 
     /**
-     * MySQL子处理对象列表
-     * the IanMySQL instance can create the child instance
-     * the parent and children instance use the same database connection to save resources and control transaction
-     * all children instances are stored in this list
+     * the IanMySQL instance can create child instance
+     * parent and child instance share database connection to save resources and control transaction
+     * all child instances are stored in this list
      */
     protected List<IanMySQL> _mySqlWheres=new ArrayList<IanMySQL>();
 
     /**
-     * 增加MySQL子处理对象
-     * add a IanMySQL instance to the MySQL instance list
-     * @param m MySQL子处理对象 IanMySQL child instance
+     * add IanMySQL instance to the MySQL instance list
+     * @param m MySQL child instance, or IanMySQL child instance, in this case
      */
     private void AddIanMySql(IanMySQL m){
         if(m!=null){
             this._mySqlWheres.add(m);
-            this.LogInfo("IanMySql对象(" + this.Guid + ")加入子对象 " + m.Guid);
+            this.LogInfo("IanMySql instance(" + this.Guid + ")add child instance " + m.Guid);
         }
     }
 
     /**
-     * 构造函数
      * constructor
-     * 从连接池分配连接
-     * get the database connection from the datasource (the database connection pool)
+     * get database connection from datasource (the database connection pool)
      * @throws Exception
      */
     public IanMySQL(javax.sql.DataSource ds) throws Exception {
-        if(ds==null) throw new Exception("数据库连接源不能为空");
+        if(ds==null) throw new Exception("dataSource cannot be empty");
         this.DataSource=ds;
         this.Connection=this.DataSource.getConnection();
-        this.LogInfo(this.Guid+"创建IanMySql对象，并分配数据库连接");
+        this.LogInfo(this.Guid+"create IanMySql instance and assign database connection");
     }
 
     /**
-     * 构造函数
      * constructor
-     * 如果指定连接为空，则从连接池分配连接，否则当前实例连接为指定连接
-     * if the specified connection is null then get the connection from the database source (the database connection pool)
-     * if the specified connection is not null then get the specified connection
-     * @param conn 指定连接 the specified connection
-     * @param ds 数据库连接源，指定连接的参数必须由此连接源产生 the datasource (the database connection pool)
+     * if specified connection is null, get connection from database source (the database connection pool)
+     * if specified connection is not null, get specified connection
+     * @param conn the specified connection
+     * @param ds the datasource (the database connection pool)
      * @throws Exception
      */
     private IanMySQL(java.sql.Connection conn, javax.sql.DataSource ds) throws Exception {
-        if(ds==null) throw new Exception("数据库连接源不能为空");
+        if(ds==null) throw new Exception("dataSource cannot be empty");
         this.DataSource=ds;
         if(conn!=null){
             this.Connection=conn;
@@ -140,10 +124,9 @@ public class IanMySQL {
     }
 
     /**
-     * 创建当前IanMySQL的子实例，子实例与主实例共用一个数据库连接
-     * create the IanMySQL child instance
-     * the child instance and the parent instance use the same database connection
-     * @return 返回创建的子实例 return the created IanMySQL child instance
+     * create IanMySQL child instance
+     * notice the child instance and the parent instance use the same database connection
+     * @return return the created IanMySQL child instance
      * @throws Exception
      */
     public IanMySQL CreateIanMySql() throws Exception {
@@ -154,7 +137,6 @@ public class IanMySQL {
     }
 
     /**
-     * 关闭连接
      * close the IanMySQL instance (include the children instance)
      * and close the database connection if the database connection is not closed
      * @throws SQLException
@@ -170,50 +152,44 @@ public class IanMySQL {
         }catch(Exception ex){
 
         }
-        this.LogInfo("释放数据库连接"+this.Guid);
+        this.LogInfo("release database connection"+this.Guid);
     }
 
     /**
-     * 主干SQL
      * the main SQL statement
      */
     public String Sql="";
 
     /**
-     * 私有的where条件语句列表
-     * the where condition statement list, it's private field
+     * private where condition
      */
     protected List<IanKeyPair<IanLogicalRelationEnum, String>> _Wheres=new ArrayList<IanKeyPair<IanLogicalRelationEnum,String>>();
 
     /**
-     * 私有的SqlParamter参数信息列表
-     * the Sql parameters list, it's private field
+     * private Sql parameters list
      */
     protected Map<String, Object> _SqlParameters=new HashMap<String, Object>();
 
     /**
-     * 私有的Order By语句
-     * the order statement, it's private field
+     * private order statement
      */
     protected String _OrderBy = "";
 
     /**
-     * 私有的Group By语句
-     * the group by statement, it's private field
+     * private group by statement
      */
     protected String _GroupBy = "";
+
     /**
-     * 私有的Limit语句
-     * the limit statement, it's private field
+     * private limit statement
      */
     protected String _Limit = "";
 
     /**
-     * reset Sql、OrderBy、GroupBy、Limit statement field to blank
-     * 重置Sql、OrderBy、GroupBy、Limit语句为空
-     * 所有条件被清理 clear all condition
-     * 所有的参数被清理 clear all parameters
-     * 所有的子实例也被清理 clear all children instance
+     * reset Sql、OrderBy、GroupBy、Limit statement field to empty
+     * clear all conditions
+     * clear all parameters
+     * clear all child instances
      */
     public void Reset() throws SQLException {
         this.Sql="";
@@ -230,14 +206,13 @@ public class IanMySQL {
     }
 
     /**
-     * 加入where条件语句
      * add where condition statement
-     * @param logicalRelation 逻辑关系and或者or logical relation
-     * @param whereSql where条件语句 the sql statement representing where statement
+     * @param logicalRelation logical relation for sql
+     * @param whereSql where statement for sql
      * @throws Exception
      */
     public void AddWhere(IanLogicalRelationEnum logicalRelation, String whereSql) throws Exception {
-        whereSql= IanStringTool.Check(whereSql,"SQL语句加入的Where条件");
+        whereSql= IanStringTool.Check(whereSql,"where condition in Sql");
         Matcher m= Pattern.compile(".*(\\s+)or(\\s+).*").matcher(whereSql.toLowerCase());
         if(m.matches()){
             whereSql="("+whereSql+")";
@@ -246,10 +221,9 @@ public class IanMySQL {
     }
 
     /**
-     * 加入where条件语句
      * add where condition statement
-     * 默认逻辑关系为And default logical relation is and
-     * @param whereSql where条件语句 the sql statement representing where statement
+     * default logical relation: and
+     * @param whereSql where statement for sql
      * @throws Exception
      */
     public void AddWhere(String whereSql) throws Exception {
@@ -257,9 +231,8 @@ public class IanMySQL {
     }
 
     /**
-     * 设置SQL语句order by部分，不包含order by
-     * set the order by statement in sql, not include "order by"
-     * @param orderBy order by 内容 order by statement
+     * set the order by statement in sql, not including "order by"
+     * @param orderBy order by statement
      */
     public void SetOrderBy(String orderBy){
         orderBy= IanStringTool.Deal(orderBy,"");
@@ -267,9 +240,8 @@ public class IanMySQL {
     }
 
     /**
-     * 设置SQL语句的limit部分，不包括limit
-     * set the limit statement in sql, not include "limit"
-     * @param limit limit内容 limit statement
+     * set the limit statement in sql, not including "limit"
+     * @param limit limit statement
      */
     public void SetLimit(String limit){
         limit= IanStringTool.Deal(limit,"");
@@ -277,9 +249,8 @@ public class IanMySQL {
     }
 
     /**
-     * 设置SQL语句group by部分，不包含group by
-     * set the group by statement in sql, not include "group by"
-     * @param groupBy group by内容 group by statement
+     * set the group by statement in sql, not including "group by"
+     * @param groupBy group by statement
      */
     public void SetGroupBy(String groupBy){
         groupBy= IanStringTool.Deal(groupBy,"");
@@ -287,16 +258,15 @@ public class IanMySQL {
     }
 
     /**
-     * 加入MySqlParameter参数
      * add MySql Parameter name and value
-     * the parameter name need start with character "@", the parameter name is correspond to variable in sql statement
-     * @param name 参数名 parameter name
-     * @param value 参数值 parameter value
+     * the parameter name needs to start with character "@" in order to correspond to a variable in sql statement
+     * @param name parameter name
+     * @param value parameter value
      * @throws Exception
      */
     public void AddSqlParamter(String name, Object value) throws Exception {
-        name= IanStringTool.Check(name,"参数名");
-        if(!name.startsWith("@")) throw new Exception("参数请用@开头");
+        name= IanStringTool.Check(name,"parameter name");
+        if(!name.startsWith("@")) throw new Exception("parameter name starts with @");
         if(value instanceof Date &&((Date)value).getTime()==Long.MAX_VALUE){
             this._SqlParameters.put(name,null);
         }else{
@@ -305,37 +275,30 @@ public class IanMySQL {
     }
 
     /**
-     * 获取SQL语句
-     * get the sql statement
-     * 默认包含排序，不包含分组
-     * default
-     * include order by statement
-     * exclude group by statement
-     * @return SQL语句 sql statement
+     * get sql statement
+     * include order by statement by default
+     * exclude group by statement by default
+     * @return sql statement
      */
     protected String GetSQL(){
         return this.GetSQL(true);
     }
 
     /**
-     * 获取SQL语句
-     * get the sql statement
-     * 默认不包含分组
-     * default
-     * exclude group by statement
-     * @param isOrder 是否排序 whether include order by statement
-     * @return SQL语句 sql statement
+     * get sql statement
+     * exclude group by statement by default
+     * @param isOrder whether include order by statement or not
+     * @return sql statement
      */
     protected String GetSQL(boolean isOrder){
         return this.GetSQL(isOrder,false);
     }
 
     /**
-     * 获取SQL语句
      * get the sql statement
-     * @param order 是否包含排序 whether include order by statement
-     * @param group 是否包含分组 whether include group by statement
-     * @return SQL语句 sql statement
+     * @param order whether include order by statement or not
+     * @param group whether include group by statement or not
+     * @return sql statement
      */
     protected String GetSQL(boolean order, boolean group){
         StringBuilder sql = new StringBuilder();
@@ -383,17 +346,14 @@ public class IanMySQL {
     }
 
     /**
-     * 将SQL语句转换成“?”的参数表达式
-     * convert the parameter (start with character "@") to "?" (parameter in standard mysql usage) expression
-     * 如果没有参数则不转换
-     * it will not do any conversion when no parameters in sql statement
-     * @param sql 需要转换的SQL语句 the sql statement need to converted
+     * convert parameter (start with character "@") to "?" (parameter in standard mysql usage) expression
+     * doesn't convert empty parameters in sql statement
+     * @param sql sql statement needs to be converted
      * @return
-     * map.get(0)为转换后的可用SQL语句，如果有参数则为1至map.size() - 1,Key代表SQL语句中的"?"位置，Value为this._SqlParameters对应的Key值
-     * map.get(0) is converted sql statement
-     * map index 1 to map.size() -1 is parameters information
-     * map Key is the "?" position in sql statement
-     * map Value is the key of this._SqlParameters
+     * map.get(0) is the converted sql statement
+     * map index 1 to map.size()-1 specifies parameter information
+     * map Key specifies the position of "?" in sql statement
+     * map Value represents the value of Key for this._SqlParameters
      */
     private Map<Integer, String> parseSQL(String sql){
         String regex = "(@(\\w+))";
@@ -402,7 +362,7 @@ public class IanMySQL {
         int idx=1;
         Map<Integer, String> ms=new HashMap<>();
         while (m.find()) {
-            //参数名称可能有重复，使用序号来做Key
+            //number the Key in case there's repetition in parameters
             ms.put(idx++, "@"+m.group(2));
         }
         String s = sql.replaceAll(regex, "?");
@@ -415,7 +375,7 @@ public class IanMySQL {
                     if(this._SqlParameters.containsKey(ms.get(i))){
                         this.LogInfo("param "+i+"("+ms.get(i)+"):"+String.valueOf(this._SqlParameters.get(ms.get(i))));
                     }else{
-                        this.LogInfo("param "+i+"("+ms.get(i)+"):未发现名为"+ms.get(i)+"的参数设置");
+                        this.LogInfo("param "+i+"("+ms.get(i)+"):parameter "+ms.get(i)+" not found");
                     }
                 }
             }
@@ -424,7 +384,6 @@ public class IanMySQL {
     }
 
     /**
-     * 执行SQL语句
      * execute sql statement
      * @throws Exception
      */
@@ -433,9 +392,8 @@ public class IanMySQL {
     }
 
     /**
-     * 执行SQL语句
      * execute sql statement
-     * @param needExecute 真正执行 whether execute sql statement
+     * @param needExecute confirm sql statement execution
      * @throws Exception
      */
     public void ExecuteCmd(boolean needExecute) throws Exception {
@@ -446,7 +404,7 @@ public class IanMySQL {
             Statement stm=null;
             try
             {
-                this.LogInfo(this.Guid+" 执行SQL:"+sql1);
+                this.LogInfo(this.Guid+" execute SQL:"+sql1);
                 stm=this.Connection.createStatement();
                 if(needExecute){
                     stm.execute(sql1);
@@ -454,7 +412,7 @@ public class IanMySQL {
             }
             catch (Exception e)
             {
-                this.LogError(this.Guid+" 执行SQL:"+sql1+" 失败:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
+                this.LogError(this.Guid+" execute SQL:"+sql1+" failed:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
                 throw e;
             }
             finally
@@ -468,15 +426,15 @@ public class IanMySQL {
             PreparedStatement stm=null;
             try
             {
-                this.LogInfo(this.Guid+" 执行SQL:"+sql1);
+                this.LogInfo(this.Guid+" execute SQL:"+sql1);
                 stm=this.Connection.prepareStatement(sql1);
                 for(Integer id:ms.keySet()){
                     if(id==0) continue;
                     String key=ms.get(id);
-                    if(!this._SqlParameters.containsKey(key)) throw new Exception("未发现名为"+key+"的参数设置");
+                    if(!this._SqlParameters.containsKey(key)) throw new Exception("parameter information "+key+" not found");
                     Object val=this._SqlParameters.get(key);
                     stm.setObject(id,val);
-                    this.LogInfo(this.Guid+" 执行SQL参数:@"+key+"="+IanConvert.ToString(val));
+                    this.LogInfo(this.Guid+" execute SQL parameter:@"+key+"="+IanConvert.ToString(val));
                 }
                 if(needExecute){
                     stm.executeUpdate();
@@ -484,7 +442,7 @@ public class IanMySQL {
             }
             catch (Exception e)
             {
-                this.LogError(this.Guid+" 执行SQL:"+sql1+" 失败:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
+                this.LogError(this.Guid+" execute SQL:"+sql1+" failed:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
                 throw e;
             }
             finally
@@ -498,11 +456,10 @@ public class IanMySQL {
     }
 
     /**
-     * 按对象列表批量导入
-     * batch load the specified type list
-     * @param c 对象类型 the specified type
-     * @param ts 对象列表 the specified type list
-     * @param <T> 对象类型 the specified type
+     * batch loading specified type list
+     * @param c the specified type
+     * @param ts the specified type list
+     * @param <T> the specified type
      */
     public <T> void BatchAdd(Class<T> c,List<T> ts) throws Exception {
         Field[] fs= c.getFields();
@@ -598,13 +555,10 @@ public class IanMySQL {
     }
 
     /**
-     * 批量添加数据
-     * batch load the hashmap list
-     * 如果原先未开启事务（BeginTransaction），则按照每1000条记录约定，进行自动提交，失败则之前提交的不能回滚，发生错误的这批数据会被回滚
-     * if start no transaction (not BeginTransaction) then the process will auto commit very 1000 records and can not rollback the committed records,the no commit data will rollback.
-     * 如果原先已经开启事务（BeginTransaction），则批处理不做自动提交，由外部统一管理事务提交与回滚
-     * if start transaction (BeginTransaction) then the process will no auto commit, and the transaction will be managed by main IanMySQL instance
-     * @param ps 批量参数数据 the hashmap data
+     * batch loading the hashmap list
+     * if already started no transaction (BeginTransaction), the process will auto commit every 1000 records. Committed records cannot be rolled back; only not committed data can roll back.
+     * if already started the transaction (BeginTransaction), the process will not auto commit records, and the transaction will be managed by main IanMySQL instance
+     * @param ps the hashmap data
      * @throws Exception
      */
     public void BatchAdd(List<HashMap<String, Object>> ps) throws Exception {
@@ -612,23 +566,20 @@ public class IanMySQL {
     }
 
     /**
-     * 批量添加数据
-     * batch load the hashmap list with commit record's count
-     * 如果原先未开启事务（BeginTransaction），则按照commitRows约定，进行自动提交，失败则之前提交的不能回滚，发生错误的这批数据会被回滚
-     * if start no transaction (not BeginTransaction) then the process will auto commit very commitRows records and can not rollback the committed records,the no commit data will rollback.
-     * 如果原先已经开启事务（BeginTransaction），则批处理不做自动提交，由外部统一管理事务提交与回滚
-     * if start transaction (BeginTransaction) then the process will no auto commit, and the transaction will be managed by main IanMySQL instance
-     * @param ps 批量参数数据 the hashmap data
-     * @param commitRows 每多少条提交一次，对于已开启事务的处理，没有作用 how many records will cause commit transaction,it doesn't work when deal without transaction
+     * batch loading the hashmap list with commit record's count
+     * if already started no transaction (BeginTransaction), the process will auto commit commitRows records and can not roll back the committed records; only not committed data can roll back.
+     * if already started transaction (BeginTransaction), the process will not auto commit, and the transaction will be managed by main IanMySQL instance
+     * @param ps the hashmap data
+     * @param commitRows transactions already en route will not be committed automatically
      * @throws Exception
      */
     public void BatchAdd(List<HashMap<String, Object>> ps, int commitRows) throws Exception {
         if(ps==null) ps=new ArrayList<HashMap<String, Object>>();
-        if(ps.size()==0) throw new Exception("批处理参数数据为空");
+        if(ps.size()==0) throw new Exception("empty batch loading parameter");
         if(commitRows<=0) commitRows=1000;
         String sql = this.GetSQL(false, false);
         Map<Integer, String> ms=this.parseSQL(sql);
-        this.LogInfo("批处理增加数据("+ps.size()+")，每"+commitRows+"条提交一次");
+        this.LogInfo("batch adding data ("+ps.size()+")，submit every "+commitRows+" records");
         String sql1=ms.get(0);
         PreparedStatement stm=null;
         boolean b=this.Connection.getAutoCommit();
@@ -637,22 +588,22 @@ public class IanMySQL {
         {
             if(b) this.Connection.setAutoCommit(false);
             stm=this.Connection.prepareStatement(sql1);
-            this.LogInfo(this.Guid+" 执行SQL:"+sql1);
+            this.LogInfo(this.Guid+" execute SQL:"+sql1);
             int idx=0;
             for(Map<String, Object> p:ps){
                 idx++;
                 StringBuilder sb=new StringBuilder();
-                sb.append(this.Guid+" 第"+idx+"行，执行SQL参数:\r\n");
+                sb.append(this.Guid+" at line number "+idx+", SQL execution:\r\n");
                 for(Integer id:ms.keySet()){
                     if(id==0) continue;
                     String key=ms.get(id);
-                    if(!p.containsKey(key)) throw new Exception("第"+idx+"条参数记录，未发现名为"+key+"的参数设置");
+                    if(!p.containsKey(key)) throw new Exception("at record number "+idx+", parameter information "+key+" not found");
                     Object val=p.get(key);
                     stm.setObject(id,val);
 
                     sb.append(key+"="+IanConvert.ToString(val)+"\r\n");
                 }
-                this.LogInfo(this.Guid+" 完成第"+idx+"条记录数据加入("+sb.toString()+")");
+                this.LogInfo(this.Guid+" confirm: record number "+idx+" has been added. ("+sb.toString()+")");
                 stm.addBatch();
                 remain=true;
                 if(idx%commitRows==0){
@@ -660,7 +611,7 @@ public class IanMySQL {
                         stm.executeBatch();
                         if(b) {
                             this.Connection.commit();
-                            this.LogInfo(this.Guid+" 在第"+idx+"条记录数据加入后提交");
+                            this.LogInfo(this.Guid+" submit after "+idx+" record(s) added");
                         }
                         stm.clearBatch();
                         remain=false;
@@ -671,7 +622,7 @@ public class IanMySQL {
                 stm.executeBatch();
                 if(b) {
                     this.Connection.commit();
-                    this.LogInfo(this.Guid+" 在第"+idx+"条记录数据加入，最后提交");
+                    this.LogInfo(this.Guid+" add after record number "+idx+" and submit");
                 }
                 stm.clearBatch();
                 remain=false;
@@ -679,7 +630,7 @@ public class IanMySQL {
         }
         catch (Exception e)
         {
-            this.LogError(this.Guid+" 执行SQL:"+sql1+" 失败:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
+            this.LogError(this.Guid+" execute SQL:"+sql1+" failed:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
             throw e;
         }
         finally
@@ -693,13 +644,11 @@ public class IanMySQL {
     }
 
     /**
-     * 按SQL语句获取T的列表
-     * it will execute the sql script and convert the result to the T list
-     * T必须有无参数的构造函数
-     * T must has a no parameters constructor
-     * @param t T的类型 generic type T
-     * @param <T> T的泛型 generic type T
-     * @return T的列表 the list of T
+     * execute the sql script and convert the result to the T list
+     * T must have a constructor without parameter
+     * @param t T's type
+     * @param <T> generic type T
+     * @return the T list
      * @throws Exception
      */
     public <T> List<T> GetList(Class<T> t) throws Exception {
@@ -707,19 +656,15 @@ public class IanMySQL {
     }
 
     /**
-     * 按SQL语句获取T的列表
-     * it will execute the sql script and convert the result to the T list
-     * T必须有无参数的构造函数
-     * T must has a no parameters constructor
-     * @param replaceCols 用于字段替换的对应字典表 Key是类的字段名，Value是数据库查询结果里的列名
-     *                    the dictionary to map the column relation
+     * execute the sql script and convert the result to the T list
+     * T must have a constructor without parameters
+     * @param replaceCols the dictionary to map the column relation
      *                    dictionary key is class field
      *                    dictionary value is the field in the query result from database
-     * @param t T的类型 如果字段为枚举类型，仅对使用EnumLabel定义value值的字段进行赋值处理
-     *          generic type T
-     *          if field is Enum type, the value (database table field) will be dealed only in the case that the class field used EnumLabel annotated
-     * @param <T> T的泛型 generic type T
-     * @return T的列表 the list of T
+     * @param t generic type T
+     *          if field is Enum type, the value (database table field) will be dealt only in the case that the class field used EnumLabel
+     * @param <T> generic type T
+     * @return the T list
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
@@ -739,7 +684,7 @@ public class IanMySQL {
         }
         String sql = this.GetSQL(true, true);
         Map<Integer, String> ms=this.parseSQL(sql);
-        this.LogInfo(this.Guid+" 按类型查询SQL:"+sql);
+        this.LogInfo(this.Guid+" search SQL by type:"+sql);
         String sql1=ms.get(0);
         PreparedStatement stm=null;
         List<T> ls=new ArrayList<T>();
@@ -749,10 +694,10 @@ public class IanMySQL {
             for(Integer id:ms.keySet()){
                 if(id==0) continue;
                 String key=ms.get(id);
-                if(!this._SqlParameters.containsKey(key)) throw new Exception("未发现名为"+key+"的参数设置");
+                if(!this._SqlParameters.containsKey(key)) throw new Exception("parameter information "+key+" not found");
                 Object val=this._SqlParameters.get(key);
                 stm.setObject(id,val);
-                this.LogInfo(this.Guid+" 按类型查询SQL参数:@"+key+"="+IanConvert.ToString(val));
+                this.LogInfo(this.Guid+" search SQL parameter by type:@"+key+"="+IanConvert.ToString(val));
             }
             ResultSet rs=stm.executeQuery();
             ResultSetMetaData md=rs.getMetaData();
@@ -761,7 +706,7 @@ public class IanMySQL {
             for(int i=1;i<=colCnt;i++){
                 cs.put(i,md.getColumnLabel(i));
             }
-            if(cs.size()==0) throw new Exception("没有检索到字段");
+            if(cs.size()==0) throw new Exception("result not found");
             Map<Integer, Field> mfs=new HashMap<Integer, Field>();
             this.QueryResultColumns.clear();
             if(bIsBaseType){
@@ -888,7 +833,7 @@ public class IanMySQL {
         }
         catch (Exception e)
         {
-            this.LogError(this.Guid+" 按类型查询SQL:"+sql1+" 失败:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
+            this.LogError(this.Guid+" search SQL by type:"+sql1+" failed:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
             throw e;
         }
         finally
@@ -902,10 +847,8 @@ public class IanMySQL {
     }
 
     /**
-     * 按SQL语句获取查询结果列表
-     * it will execute the sql script and convert the result to the hashmap list
-     * @return 查询结果列表，每一行为一个HashMap，以查询字段名为Key，值为Value
-     *         the query result list,every row is a hashmap ,and the query field name is hashmap key, the corresponding query field value is hashmap value
+     * execute sql script and convert the result to the hashmap list
+     * @return the query result list; every row is a hashmap, and the query field name is hashmap key; the corresponding query field value is hashmap value
      * @throws Exception
      */
     public List<HashMap<String, Object>> GetList() throws Exception {
@@ -917,14 +860,14 @@ public class IanMySQL {
         try
         {
             stm=this.Connection.prepareStatement(sql1);
-            this.LogInfo(this.Guid+" 无类型查询SQL:"+sql1);
+            this.LogInfo(this.Guid+" no SQL selection:"+sql1);
             for(Integer id:ms.keySet()){
                 if(id==0) continue;
                 String key=ms.get(id);
-                if(!this._SqlParameters.containsKey(key)) throw new Exception("未发现名为"+key+"的参数设置");
+                if(!this._SqlParameters.containsKey(key)) throw new Exception("parameter information "+key+" not found");
                 Object val=this._SqlParameters.get(key);
                 stm.setObject(id,val);
-                this.LogInfo(this.Guid+" 无类型查询SQL参数:@"+key+"="+IanConvert.ToString(val));
+                this.LogInfo(this.Guid+" no SQL selection parameter:@"+key+"="+IanConvert.ToString(val));
             }
             ResultSet rs=stm.executeQuery();
             ResultSetMetaData md=rs.getMetaData();
@@ -949,7 +892,7 @@ public class IanMySQL {
         }
         catch (Exception e)
         {
-            this.LogError(this.Guid+" 无类型查询SQL:"+sql1+" 失败:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
+            this.LogError(this.Guid+" no SQL selection:"+sql1+" failed:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
             throw e;
         }
         finally
@@ -963,9 +906,8 @@ public class IanMySQL {
     }
 
     /**
-     * 查询一条一个整型结果
-     * query result is a single int value
-     * @return 整型结果 int value
+     * query single int value result
+     * @return int value
      * @throws Exception
      */
     public int SelectInt() throws Exception {
@@ -977,14 +919,14 @@ public class IanMySQL {
         try
         {
             stm=this.Connection.prepareStatement(sql1);
-            this.LogInfo(this.Guid+" 单条Int查询SQL:"+sql1);
+            this.LogInfo(this.Guid+" single Int SQL selection:"+sql1);
             for(Integer id:ms.keySet()){
                 if(id==0) continue;
                 String key=ms.get(id);
-                if(!this._SqlParameters.containsKey(key)) throw new Exception("未发现名为"+key+"的参数设置");
+                if(!this._SqlParameters.containsKey(key)) throw new Exception("parameter information "+key+" not found");
                 Object val=this._SqlParameters.get(key);
                 stm.setObject(id,val);
-                this.LogInfo(this.Guid+" 单条Int查询SQL参数:@"+key+"="+IanConvert.ToString(val));
+                this.LogInfo(this.Guid+" single Int SQL selection parameter:@"+key+"="+IanConvert.ToString(val));
             }
             ResultSet rs=stm.executeQuery();
             boolean b=false;
@@ -992,12 +934,12 @@ public class IanMySQL {
                 r=rs.getInt(1);
                 b=true;
             }
-            if(!b) throw new Exception("未查询到记录");
-            this.LogInfo(this.Guid+" 单条Int查询SQL返回结果:"+r);
+            if(!b) throw new Exception("record not found");
+            this.LogInfo(this.Guid+" single Int SQL selection result:"+r);
         }
         catch (Exception e)
         {
-            this.LogError(this.Guid+" 单条Int查询SQL:"+sql1+" 失败:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
+            this.LogError(this.Guid+" single Int SQL selection:"+sql1+" failed:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
             throw e;
         }
         finally
@@ -1011,9 +953,8 @@ public class IanMySQL {
     }
 
     /**
-     * 查询一条一个字符串结果
-     * query result is a single string value
-     * @return 字符串结果 string value
+     * query single string value result
+     * @return string value
      * @throws Exception
      */
     public String SelectString() throws Exception {
@@ -1025,14 +966,14 @@ public class IanMySQL {
         try
         {
             stm=this.Connection.prepareStatement(sql1);
-            this.LogInfo(this.Guid+" 单条String查询SQL:"+sql1);
+            this.LogInfo(this.Guid+" single String SQL selection:"+sql1);
             for(Integer id:ms.keySet()){
                 if(id==0) continue;
                 String key=ms.get(id);
-                if(!this._SqlParameters.containsKey(key)) throw new Exception("未发现名为"+key+"的参数设置");
+                if(!this._SqlParameters.containsKey(key)) throw new Exception("parameter information "+key+" not found");
                 Object val=this._SqlParameters.get(key);
                 stm.setObject(id,val);
-                this.LogInfo(this.Guid+" 单条String查询SQL参数:@"+key+"="+IanConvert.ToString(val));
+                this.LogInfo(this.Guid+" single String SQL selection parameter:@"+key+"="+IanConvert.ToString(val));
             }
             ResultSet rs=stm.executeQuery();
             boolean b=false;
@@ -1040,12 +981,12 @@ public class IanMySQL {
                 r=rs.getString(1);
                 b=true;
             }
-            if(!b) throw new Exception("未查询到记录");
-            this.LogInfo(this.Guid+" 单条String查询SQL返回结果:"+r);
+            if(!b) throw new Exception("record not found");
+            this.LogInfo(this.Guid+" single String SQL selection result:"+r);
         }
         catch (Exception e)
         {
-            this.LogError(this.Guid+" 单条String查询SQL:"+sql1+" 失败:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
+            this.LogError(this.Guid+" single String SQL selection:"+sql1+" failed:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
             throw e;
         }
         finally
@@ -1059,15 +1000,14 @@ public class IanMySQL {
     }
 
     /**
-     * 调用存储过程
-     * call the database procedure
-     * @param strProcedureName 存储过程名 procedure name
-     * @param parameterList 参数类型列表 procedure parameters list
-     * @return 存储过程返回 the result of the procedure return
+     * call database procedure
+     * @param strProcedureName procedure name
+     * @param parameterList procedure parameters list
+     * @return result of the procedure return
      */
     public HashMap<String, Object> ExecProcedure(String strProcedureName, List<IanProcedureParameter> parameterList) throws Exception {
         if(parameterList==null) parameterList=new ArrayList<IanProcedureParameter>();
-        strProcedureName= IanStringTool.Check(strProcedureName,"存储过程名称");
+        strProcedureName= IanStringTool.Check(strProcedureName,"procedure name");
         CallableStatement stm=null;
         String sql1="call "+strProcedureName;
         HashMap<String, Object> rs=new HashMap<String, Object>();
@@ -1086,33 +1026,33 @@ public class IanMySQL {
             HashMap<Integer, String> rs1=new HashMap<Integer, String>();
             StringBuilder sps=new StringBuilder();
             for(IanProcedureParameter p:parameterList){
-                sps.append("参数"+idx+":");
+                sps.append("parameter"+idx+":");
                 if(p.flag== IanProcedureParameterFlagEnum.IN){
                     stm.setObject(idx,p.value);
-                    sps.append("输入,"+IanConvert.ToString(p.value));
+                    sps.append("input,"+IanConvert.ToString(p.value));
                 }else if(p.flag== IanProcedureParameterFlagEnum.OUT){
                     stm.setObject(idx,p.value);
                     stm.registerOutParameter(idx,p.type);
                     rs1.put(idx,p.name);
-                    sps.append("输出,"+IanConvert.ToString(p.name));
+                    sps.append("output,"+IanConvert.ToString(p.name));
                 }else{
                     stm.registerOutParameter(idx,p.type);
                     rs1.put(idx,p.name);
-                    sps.append("输入输出,"+IanConvert.ToString(p.name));
+                    sps.append("input and output,"+IanConvert.ToString(p.name));
                 }
                 sps.append("\r\n");
                 idx++;
             }
-            this.LogInfo("执行存储过程:"+sql1);
+            this.LogInfo("execute procedure:"+sql1);
             this.LogInfo(sps.toString());
             stm.execute();
             for(int id:rs1.keySet()){
                 String pname=rs1.get(id);
                 rs.put(pname,stm.getObject(id));
-                this.LogInfo("获取结果:"+pname+"="+rs.get(pname));
+                this.LogInfo("get result:"+pname+"="+rs.get(pname));
             }
         }catch (Exception e){
-            this.LogError(this.Guid+" 调用存储过程:"+sql1+" 参数"+IanProcedureParameter.getLabels(parameterList)+" 失败:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
+            this.LogError(this.Guid+" get procedure:"+sql1+" parameter"+IanProcedureParameter.getLabels(parameterList)+" failed:"+e.getMessage()+"\r\n"+IanStringTool.GetExceptionStackInfo(e));
             throw e;
         }finally {
             if(stm!=null){
@@ -1124,33 +1064,30 @@ public class IanMySQL {
     }
 
     /**
-     * 开始事务
      * start transaction
      */
     public void BeginTransaction() throws SQLException {
         this.Connection.setAutoCommit(false);
-        this.LogInfo(this.Guid+"开始事务");
+        this.LogInfo(this.Guid+"start transaction");
     }
 
     /**
-     * 提交事务
      * commit transaction
      * @throws SQLException
      */
     public void Commit() throws SQLException {
         this.Connection.commit();;
         this.Connection.setAutoCommit(true);
-        this.LogInfo(this.Guid+"提交事务");
+        this.LogInfo(this.Guid+"commit transaction");
     }
 
     /**
-     * 回滚事务
      * rollback transaction
      * @throws SQLException
      */
     public void Rollback() throws SQLException {
         this.Connection.rollback();;
         this.Connection.setAutoCommit(true);
-        this.LogInfo(this.Guid+"回滚事务");
+        this.LogInfo(this.Guid+"roll back transaction");
     }
 }

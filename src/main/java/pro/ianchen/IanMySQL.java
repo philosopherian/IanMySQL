@@ -9,15 +9,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Ian的MySQL操作类
  * MySQL operator prototype
  */
 public class IanMySQL {
     /**
+     * 日志委托接口
      * log delegate function
      */
     public Consumer<String> Log=null;
 
     /**
+     * 普通日志
      * normal log
      * @param s log content
      */
@@ -30,6 +33,7 @@ public class IanMySQL {
 
 
     /**
+     * 错误日志
      * error log
      * @param s log content
      */
@@ -41,24 +45,29 @@ public class IanMySQL {
     }
 
     /**
+     * 全局标记
+     * 用于在多线程环境中区分不同的日志内容
      * mark guid
      * distinguish different log contents in multithreaded environment
      */
     public String Guid= IanStringTool.Guid2();
 
     /**
+     * 数据源
      * database source
      */
     public javax.sql.DataSource DataSource=null;
 
     /**
+     * 数据连接
      * database connection
      */
     public java.sql.Connection Connection=null;
 
     /**
+     * 确认是否数据库操作为自动提交模式
      * confirm if database operation is automatically committed
-     * @return true or false
+     * @return 是或否 true or false
      */
     public boolean IsAutoCommit() throws SQLException {
         if(this.Connection==null) return true;
@@ -66,16 +75,19 @@ public class IanMySQL {
     }
 
     /**
-     * database connection timeout limit
+     * 数据库连接超时秒数
+     * database connection timeout limit (seconds)
      */
     public int SQLTimeOut = 720;
 
     /**
+     * 查询结果返回列
      * query result columns
      */
     public Map<Integer, String> QueryResultColumns=new HashMap<Integer, String>();
 
     /**
+     * IanMySQL子处理对象列表
      * the IanMySQL instance can create child instance
      * parent and child instance share database connection to save resources and control transaction
      * all child instances are stored in this list
@@ -83,6 +95,7 @@ public class IanMySQL {
     protected List<IanMySQL> _mySqlWheres=new ArrayList<IanMySQL>();
 
     /**
+     * 增加IanMySQL子处理对象
      * add IanMySQL instance to the MySQL instance list
      * @param m MySQL child instance, or IanMySQL child instance, in this case
      */
@@ -94,7 +107,9 @@ public class IanMySQL {
     }
 
     /**
+     * 构造函数
      * constructor
+     * 从连接池分配连接
      * get database connection from datasource (the database connection pool)
      * @throws Exception
      */
@@ -106,11 +121,13 @@ public class IanMySQL {
     }
 
     /**
+     * 构造函数
      * constructor
+     * 如果指定连接为空，则从连接池分配连接，否则当前实例连接为指定连接
      * if specified connection is null, get connection from database source (the database connection pool)
      * if specified connection is not null, get specified connection
-     * @param conn the specified connection
-     * @param ds the datasource (the database connection pool)
+     * @param conn 指定连接 the specified connection
+     * @param ds 数据库连接源，指定连接的参数(conn)必须由此连接源产生 the datasource (the database connection pool)
      * @throws Exception
      */
     private IanMySQL(java.sql.Connection conn, javax.sql.DataSource ds) throws Exception {
@@ -124,9 +141,10 @@ public class IanMySQL {
     }
 
     /**
+     * 创建当前IanMySQL的子实例，子实例与主实例共用一个数据库连接
      * create IanMySQL child instance
      * notice the child instance and the parent instance use the same database connection
-     * @return return the created IanMySQL child instance
+     * @return 返回创建的子实例 return the created IanMySQL child instance
      * @throws Exception
      */
     public IanMySQL CreateIanMySql() throws Exception {
@@ -137,6 +155,7 @@ public class IanMySQL {
     }
 
     /**
+     * 关闭实例连接(包括子实例的连接)
      * close the IanMySQL instance (include the children instance)
      * and close the database connection if the database connection is not closed
      * @throws SQLException
@@ -156,39 +175,49 @@ public class IanMySQL {
     }
 
     /**
+     * 主干SQL
      * the main SQL statement
      */
     public String Sql="";
 
     /**
-     * private where condition
+     * where条件语句列表
+     * where condition
      */
     protected List<IanKeyPair<IanLogicalRelationEnum, String>> _Wheres=new ArrayList<IanKeyPair<IanLogicalRelationEnum,String>>();
 
     /**
-     * private Sql parameters list
+     * SQL参数列表
+     * Sql parameters list
      */
     protected Map<String, Object> _SqlParameters=new HashMap<String, Object>();
 
     /**
-     * private order statement
+     * 排序语句
+     * order statement
      */
     protected String _OrderBy = "";
 
     /**
-     * private group by statement
+     * 分组语句
+     * group by statement
      */
     protected String _GroupBy = "";
 
     /**
-     * private limit statement
+     * Limit语句
+     * limit statement
      */
     protected String _Limit = "";
 
     /**
+     * 重置Sql、OrderBy、GroupBy、Limit语句为空
      * reset Sql、OrderBy、GroupBy、Limit statement field to empty
+     * 所有条件被清理
      * clear all conditions
+     * 所有的参数被清理
      * clear all parameters
+     * 所有的子实例也被清理
      * clear all child instances
      */
     public void Reset() throws SQLException {
@@ -206,9 +235,10 @@ public class IanMySQL {
     }
 
     /**
+     * 加入where条件语句
      * add where condition statement
-     * @param logicalRelation logical relation for sql
-     * @param whereSql where statement for sql
+     * @param logicalRelation 逻辑关系and或者or logical relation for sql
+     * @param whereSql where条件语句 where statement for sql
      * @throws Exception
      */
     public void AddWhere(IanLogicalRelationEnum logicalRelation, String whereSql) throws Exception {
@@ -221,9 +251,11 @@ public class IanMySQL {
     }
 
     /**
+     * 加入where条件语句
      * add where condition statement
+     * 默认逻辑关系为And
      * default logical relation: and
-     * @param whereSql where statement for sql
+     * @param whereSql where条件语句 where statement for sql
      * @throws Exception
      */
     public void AddWhere(String whereSql) throws Exception {
@@ -231,8 +263,9 @@ public class IanMySQL {
     }
 
     /**
+     * 设置SQL语句order by部分，不包含order by
      * set the order by statement in sql, not including "order by"
-     * @param orderBy order by statement
+     * @param orderBy order by 内容 order by statement
      */
     public void SetOrderBy(String orderBy){
         orderBy= IanStringTool.Deal(orderBy,"");
@@ -240,8 +273,9 @@ public class IanMySQL {
     }
 
     /**
+     * 设置SQL语句的limit部分，不包括limit
      * set the limit statement in sql, not including "limit"
-     * @param limit limit statement
+     * @param limit limit内容 limit statement
      */
     public void SetLimit(String limit){
         limit= IanStringTool.Deal(limit,"");
@@ -249,8 +283,9 @@ public class IanMySQL {
     }
 
     /**
+     * 设置SQL语句group by部分，不包含group by
      * set the group by statement in sql, not including "group by"
-     * @param groupBy group by statement
+     * @param groupBy group by内容 group by statement
      */
     public void SetGroupBy(String groupBy){
         groupBy= IanStringTool.Deal(groupBy,"");
@@ -258,10 +293,12 @@ public class IanMySQL {
     }
 
     /**
+     * 加入MySqlParameter参数
      * add MySql Parameter name and value
+     * 参数名称需要使用"@"符号开头，以关联sql语句中的参数变量
      * the parameter name needs to start with character "@" in order to correspond to a variable in sql statement
-     * @param name parameter name
-     * @param value parameter value
+     * @param name 参数名 parameter name
+     * @param value 参数值 parameter value
      * @throws Exception
      */
     public void AddSqlParamter(String name, Object value) throws Exception {
@@ -275,30 +312,35 @@ public class IanMySQL {
     }
 
     /**
+     * 获取SQL语句
      * get sql statement
+     * 默认包含排序，不包含分组
      * include order by statement by default
      * exclude group by statement by default
-     * @return sql statement
+     * @return SQL语句 sql statement
      */
     protected String GetSQL(){
         return this.GetSQL(true);
     }
 
     /**
+     * 获取SQL语句
      * get sql statement
+     * 默认不包含分组
      * exclude group by statement by default
-     * @param isOrder whether include order by statement or not
-     * @return sql statement
+     * @param isOrder 是否包含排序 whether include order by statement or not
+     * @return SQL语句 sql statement
      */
     protected String GetSQL(boolean isOrder){
         return this.GetSQL(isOrder,false);
     }
 
     /**
+     * 获取SQL语句
      * get the sql statement
-     * @param order whether include order by statement or not
-     * @param group whether include group by statement or not
-     * @return sql statement
+     * @param order 是否包含排序 whether include order by statement or not
+     * @param group 是否包含分组 whether include group by statement or not
+     * @return SQL语句 sql statement
      */
     protected String GetSQL(boolean order, boolean group){
         StringBuilder sql = new StringBuilder();
@@ -346,13 +388,19 @@ public class IanMySQL {
     }
 
     /**
+     * 将SQL语句参数(以"@"字符开始)转换成标准的“?”的参数表达式用法
      * convert parameter (start with character "@") to "?" (parameter in standard mysql usage) expression
+     * 如果没有参数则不转换
      * doesn't convert empty parameters in sql statement
-     * @param sql sql statement needs to be converted
+     * @param sql 需要转换的SQL语句 sql statement needs to be converted
      * @return
+     * 为转换后的可用SQL语句
      * map.get(0) is the converted sql statement
+     * 如果有参数则为1至map.size() - 1为指定的参数信息
      * map index 1 to map.size()-1 specifies parameter information
+     * Key代表SQL语句中的"?"位置
      * map Key specifies the position of "?" in sql statement
+     * Value为this._SqlParameters的Key对应值
      * map Value represents the value of Key for this._SqlParameters
      */
     private Map<Integer, String> parseSQL(String sql){
@@ -362,7 +410,6 @@ public class IanMySQL {
         int idx=1;
         Map<Integer, String> ms=new HashMap<>();
         while (m.find()) {
-            //number the Key in case there's repetition in parameters
             ms.put(idx++, "@"+m.group(2));
         }
         String s = sql.replaceAll(regex, "?");
@@ -384,6 +431,7 @@ public class IanMySQL {
     }
 
     /**
+     * 执行SQL语句
      * execute sql statement
      * @throws Exception
      */
@@ -392,8 +440,9 @@ public class IanMySQL {
     }
 
     /**
+     * 执行SQL语句
      * execute sql statement
-     * @param needExecute confirm sql statement execution
+     * @param needExecute 是否真正执行 confirm sql statement execution
      * @throws Exception
      */
     public void ExecuteCmd(boolean needExecute) throws Exception {
@@ -456,10 +505,11 @@ public class IanMySQL {
     }
 
     /**
+     * 按对象列表批量导入
      * batch loading specified type list
-     * @param c the specified type
-     * @param ts the specified type list
-     * @param <T> the specified type
+     * @param c 对象类型 the specified type
+     * @param ts 对象实例列表 the specified type instance list
+     * @param <T> 对象类型 the specified type
      */
     public <T> void BatchAdd(Class<T> c,List<T> ts) throws Exception {
         Field[] fs= c.getFields();
@@ -555,10 +605,13 @@ public class IanMySQL {
     }
 
     /**
+     * 批量添加HashMap数据列表
      * batch loading the hashmap list
-     * if already started no transaction (BeginTransaction), the process will auto commit every 1000 records. Committed records cannot be rolled back; only not committed data can roll back.
+     * 如果原先未开启事务，则按照commitRows约定，进行自动提交，失败则之前提交的不能回滚，发生错误的这批数据会被回滚
+     * if already not begin transaction, the process will auto commit every 1000 records. Committed records cannot be rolled back; only not committed data can roll back.
+     * 如果原先已经开启事务（BeginTransaction），则批处理不做自动提交，由外部统一管理事务提交与回滚
      * if already started the transaction (BeginTransaction), the process will not auto commit records, and the transaction will be managed by main IanMySQL instance
-     * @param ps the hashmap data
+     * @param ps 批量参数数据 the hashmap data
      * @throws Exception
      */
     public void BatchAdd(List<HashMap<String, Object>> ps) throws Exception {
@@ -566,11 +619,14 @@ public class IanMySQL {
     }
 
     /**
+     * 批量添加数据
      * batch loading the hashmap list with commit record's count
-     * if already started no transaction (BeginTransaction), the process will auto commit commitRows records and can not roll back the committed records; only not committed data can roll back.
+     * 如果原先未开启事务，则按照commitRows约定，进行自动提交，失败则之前提交的不能回滚，发生错误的这批数据会被回滚
+     * if already not begin transaction, the process will auto commit commitRows records and can not roll back the committed records; only not committed data can roll back.
+     * 如果原先已经开启事务（BeginTransaction），则批处理不做自动提交，由外部统一管理事务提交与回滚
      * if already started transaction (BeginTransaction), the process will not auto commit, and the transaction will be managed by main IanMySQL instance
-     * @param ps the hashmap data
-     * @param commitRows transactions already en route will not be committed automatically
+     * @param ps 批量参数数据 the hashmap data
+     * @param commitRows 每多少条提交一次，对于已开启事务的处理，没有作用 ???
      * @throws Exception
      */
     public void BatchAdd(List<HashMap<String, Object>> ps, int commitRows) throws Exception {
@@ -644,11 +700,13 @@ public class IanMySQL {
     }
 
     /**
+     * 按SQL语句获取T的列表
      * execute the sql script and convert the result to the T list
+     * T必须有无参数的构造函数
      * T must have a constructor without parameter
-     * @param t T's type
-     * @param <T> generic type T
-     * @return the T list
+     * @param t T的类型 type T
+     * @param <T> T的泛型 generic type T
+     * @return T的列表 the T list
      * @throws Exception
      */
     public <T> List<T> GetList(Class<T> t) throws Exception {
@@ -656,15 +714,19 @@ public class IanMySQL {
     }
 
     /**
+     * 按SQL语句获取T的列表
      * execute the sql script and convert the result to the T list
+     * T必须有无参数的构造函数
      * T must have a constructor without parameters
-     * @param replaceCols the dictionary to map the column relation
+     * @param replaceCols 用于字段替换的对应字典表 Key是类的字段名，Value是数据库查询结果里的列名
+     *                    the dictionary to map the column relation
      *                    dictionary key is class field
      *                    dictionary value is the field in the query result from database
-     * @param t generic type T
-     *          if field is Enum type, the value (database table field) will be dealt only in the case that the class field used EnumLabel
+     * @param t T的类型 如果字段为枚举类型，仅对使用IanEnumLabel注解的value值的字段进行赋值处理
+     *          type T
+     *          if field is Enum type, the value (database table field) will be dealt only in the case that the class field annotated by IanEnumLabel
      * @param <T> generic type T
-     * @return the T list
+     * @return T的列表 the T list
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
@@ -847,8 +909,10 @@ public class IanMySQL {
     }
 
     /**
+     * 按SQL语句获取查询结果列表
      * execute sql script and convert the result to the hashmap list
-     * @return the query result list; every row is a hashmap, and the query field name is hashmap key; the corresponding query field value is hashmap value
+     * @return 查询结果列表，每一行为一个HashMap，以查询字段名为Key，值为Value
+     *         the query result list; every row is a hashmap, and the query field name is hashmap key; the corresponding query field value is hashmap value
      * @throws Exception
      */
     public List<HashMap<String, Object>> GetList() throws Exception {
@@ -906,8 +970,9 @@ public class IanMySQL {
     }
 
     /**
+     * 查询一条一个整型结果
      * query single int value result
-     * @return int value
+     * @return 整型结果 int value
      * @throws Exception
      */
     public int SelectInt() throws Exception {
@@ -953,8 +1018,9 @@ public class IanMySQL {
     }
 
     /**
+     * 查询一条一个字符串结果
      * query single string value result
-     * @return string value
+     * @return 字符串结果 string value
      * @throws Exception
      */
     public String SelectString() throws Exception {
@@ -1000,10 +1066,11 @@ public class IanMySQL {
     }
 
     /**
+     * 调用存储过程
      * call database procedure
-     * @param strProcedureName procedure name
-     * @param parameterList procedure parameters list
-     * @return result of the procedure return
+     * @param strProcedureName 存储过程名 procedure name
+     * @param parameterList 参数类型列表 procedure parameters list
+     * @return 存储过程返回 result of the procedure return
      */
     public HashMap<String, Object> ExecProcedure(String strProcedureName, List<IanProcedureParameter> parameterList) throws Exception {
         if(parameterList==null) parameterList=new ArrayList<IanProcedureParameter>();
@@ -1064,6 +1131,7 @@ public class IanMySQL {
     }
 
     /**
+     * 开始事务
      * start transaction
      */
     public void BeginTransaction() throws SQLException {
@@ -1072,6 +1140,7 @@ public class IanMySQL {
     }
 
     /**
+     * 提交事务
      * commit transaction
      * @throws SQLException
      */
@@ -1082,6 +1151,7 @@ public class IanMySQL {
     }
 
     /**
+     * 回滚事务
      * rollback transaction
      * @throws SQLException
      */

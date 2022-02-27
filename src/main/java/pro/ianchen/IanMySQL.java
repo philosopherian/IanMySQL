@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * Ian的MySQL操作类
- * MySQL operator prototype
+ * Ian's MySQL operator class
  */
 public class IanMySQL {
     /**

@@ -1,5 +1,5 @@
-# Ian's MySQL operator class
-Ian的MySQL操作类
+# Ian's MySQL wrapper, support DDL、DML、TCL in MySQL
+Ian的MySQL操作库，支持MySQL的DDL、DML、TCL语句
 这是一个MySQL的数据库操作类
 基于JDBC，使用HikariCP作为数据库连接池
 提供了select，insert，update，delete以及存储过程调用接口

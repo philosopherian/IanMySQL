@@ -1,41 +1,18 @@
-#Ian's MySQL operator class
-Ian的MySQL操作类
-这是一个MySQL的数据库操作类
-基于JDBC，使用HikariCP作为数据库连接池
-提供了select，insert，update，delete以及存储过程调用接口
-目的是为了方便MySQL日常的数据库操作
+package pro.ianchen;
 
-##Background
-* 在几个涉及MySQL数据库的项目中，发现直接使用JDBC操作数据库，有很多代码实际上是重复的，因此我希望能有一个通用的工具，能够让我简化对MySQL的数据操作。  
-* 虽然应该会有很多这样的工具，但我担心其中的代码是否存在一些问题，特别是涉及安全性方面的，一旦出了错误，还要去理解开发方的代码，并联系开发方修改代码，这个会降低我解决问题的效率。而且我也希望能自己亲手做一款这样的工具，一方面是自己用，另一方面，也发布到github上，让其他人一起使用，方便大家对MySQL数据库的操作。  
-* 如果有可能，我也希望今后能推出不同语言的MySQL数据库操作库，最后形成一个统一的操作库集合(*^_^*)!
+import com.zaxxer.hikari.HikariDataSource;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-##Requirements
-### JDK
-* JDK1.8 or newer
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-### MySQL Server
-* MySQL5.7 or newer
+import static org.junit.Assert.*;
 
-### 引用库 dependencies
-* junit:junit:4.12
-* com.twitter:twitter-server-slf4j-log4j12_2.11:19.9.0
-* com.twitter:util-slf4j-api_2.11:19.9.0
-* log4j:log4j:1.2.16
-* mysql:mysql-connector-java:8.0.19
-* com.zaxxer:HikariCP:4.0.1
-
-##Installation
-```
-<dependency>
-    <groupId>pro.ianchen</groupId>
-    <artifactId>IanMySQL</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
-
-##Usage & Example
-```
 public class IanMySQLTest {
 
     HikariDataSource _dataSource=null;
@@ -273,16 +250,3 @@ public class IanMySQLTest {
         }
     }
 }
-
-```
-
-##Resources
-* HikariCP:https://github.com/brettwooldridge/HikariCP
-
-##Maintainers
-* **Ian**  
-我是一个来自中国的学生，我喜欢琢磨各种有趣的事情!  
-I am a student from china, I like to think in any interest things! 
-
-##License
-Apache License

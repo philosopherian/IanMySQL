@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'pro.ianchen'
+version '1.0'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'com.twitter:twitter-server-slf4j-log4j12_2.11:19.9.0'
+    compile 'com.twitter:util-slf4j-api_2.11:19.9.0'
+    compile 'log4j:log4j:1.2.16'
+    compile 'mysql:mysql-connector-java:8.0.19'
+    compile 'com.zaxxer:HikariCP:4.0.1'
+}
+
+//对应于：javac -encoding utf-8 ...
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+compileJava {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}

@@ -9,8 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Ian的MySQL操作类
- * Ian's MySQL operator class
+ * Ian的MySQL操作库，支持MySQL的DDL、DML、TCL语句
+ * Ian's MySQL wrapper, support DDL、DML、TCL in MySQL
  */
 public class IanMySQL {
     /**

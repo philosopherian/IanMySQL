@@ -11,6 +11,7 @@ Ian的MySQL操作库，支持MySQL的DDL、DML、TCL语句
 * 如果有可能，我也希望今后能推出不同语言的MySQL数据库操作库，最后形成一个统一的操作库集合(*^_^*)!
 
 ## Requirements
+
 ### JDK
 * JDK1.8 or newer
 

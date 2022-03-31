@@ -35,7 +35,8 @@ log4j:log4j:1.2.16
 mysql:mysql-connector-java:8.0.19
 com.zaxxer:HikariCP:4.0.1
 
-引用IanMySQL-1.0.jar
+引用
+IanMySQL-1.0.jar
 ```
 
 ## Usage & Example

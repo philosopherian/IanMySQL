@@ -27,7 +27,7 @@ Ian的MySQL操作库，支持MySQL的DDL、DML、TCL语句
 
 ## Installation
 ```
-IanMySQL-1.0.jar
+引用 IanMySQL-1.0.jar
 ```
 
 ## Usage & Example

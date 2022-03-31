@@ -283,7 +283,6 @@ public class IanMySQLTest {
 ## Maintainers
 * **Ian**  
 我是一个来自中国的学生，我喜欢琢磨各种有趣的事情!  
-I am a student from china, I like to think in any interest things! 
 
 ## License
 Apache License

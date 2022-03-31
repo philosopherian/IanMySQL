@@ -27,14 +27,6 @@ Ian的MySQL操作库，支持MySQL的DDL、DML、TCL语句
 
 ## Installation
 ```
-依赖
-com.twitter:twitter-server-slf4j-log4j12_2.11:19.9.0
-com.twitter:util-slf4j-api_2.11:19.9.0
-log4j:log4j:1.2.16
-mysql:mysql-connector-java:8.0.19
-com.zaxxer:HikariCP:4.0.1
-
-引用
 IanMySQL-1.0.jar
 ```
 

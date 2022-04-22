@@ -27,6 +27,9 @@ Ian的MySQL操作库，支持MySQL的DDL、DML、TCL语句
 
 ## Installation
 ```
+build.gradle中添加
+compile 'com.zaxxer:HikariCP:4.0.1'
+
 引用 IanMySQL-1.0.jar
 ```
 

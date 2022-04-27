@@ -21,7 +21,7 @@ public class IanMySQLTest {
     public void setUp() {
         try{
             IanMySQLDataSource ds=new IanMySQLDataSource();
-            this._dataSource=ds.GetHikariDataSource("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&serverTimezone=Asia/Shanghai","test","Cs@123456");
+            this._dataSource=ds.GetHikariDataSource("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&serverTimezone=Asia/Shanghai","root","cs");
         }catch (Exception ex){
             ex.printStackTrace();
         }

@@ -33,19 +33,31 @@ public class IanMySQLDataSource {
      * @throws Exception
      */
     public HikariDataSource GetHikariDataSource(String vJdbcUrl,String vUserName,String vPassword,String vCharset) throws Exception {
+        return this.GetHikariDataSource(vJdbcUrl,vUserName,vPassword,vCharset,"com.mysql.cj.jdbc.Driver");
+    }
+
+    /**
+     * 以Hikari方式获取数据库连接池数据源
+     * get the database source (database pool) used Hikari mode
+     * @param vJdbcUrl jdbc连接 jdbc connection url
+     * @param vUserName 账号 the account of database connection
+     * @param vPassword 密码 the password of database connection
+     * @param vCharset 字符集 charset
+     * @param mySqlDriverClassName MySQL驱动类名 MySQL driver class name
+     * @return Hikari数据库连接池数据源  the database source (Hikari,database pool)
+     * @throws Exception
+     */
+    public HikariDataSource GetHikariDataSource(String vJdbcUrl,String vUserName,String vPassword,String vCharset,String mySqlDriverClassName) throws Exception {
         String jdbcUrl=IanStringTool.Check(vJdbcUrl,"连接URL");
         String userName=IanStringTool.Check(vUserName,"账号");
         String password=IanStringTool.Check(vPassword,"密码");
         String charset=IanStringTool.Deal(vCharset,"");
+        mySqlDriverClassName=IanStringTool.Deal(mySqlDriverClassName,"com.mysql.cj.jdbc.Driver");
         int cacheSize=200;//正式建议250
         int sqlLimit=2048;
 
         HikariConfig hconfig=new HikariConfig();
-        try{
-            hconfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        }catch (Exception e){
-            hconfig.setDriverClassName("com.mysql.jdbc.Driver");
-        }
+        hconfig.setDriverClassName(mySqlDriverClassName);
         hconfig.setJdbcUrl(jdbcUrl);//数据源
         hconfig.setUsername(userName);//用户名
         hconfig.setPassword(password);//密码

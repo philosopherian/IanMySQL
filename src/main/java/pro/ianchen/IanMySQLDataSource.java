@@ -41,8 +41,11 @@ public class IanMySQLDataSource {
         int sqlLimit=2048;
 
         HikariConfig hconfig=new HikariConfig();
-        //hconfig.setDriverClassName("com.mysql.jdbc.Driver");
-        hconfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        try{
+            hconfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        }catch (Exception e){
+            hconfig.setDriverClassName("com.mysql.jdbc.Driver");
+        }
         hconfig.setJdbcUrl(jdbcUrl);//数据源
         hconfig.setUsername(userName);//用户名
         hconfig.setPassword(password);//密码

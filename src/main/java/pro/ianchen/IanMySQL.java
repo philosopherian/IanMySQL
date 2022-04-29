@@ -1,6 +1,7 @@
 package pro.ianchen;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -887,6 +888,23 @@ public class IanMySQL {
                             f.setAccessible(false);
                         }else{
                             continue;
+                        }
+                    }
+                    {
+                        Field[] fs=v.getClass().getFields();
+                        Method[] methods=v.getClass().getDeclaredMethods();
+                        for(Field f:fs){
+                            if(f.getName().endsWith("Label")||f.getName().endsWith("Label2")){
+                                for(Method m:methods){
+                                    if(m!=null){
+                                        if(m.getName().toLowerCase().equals("get" + f.getName().toLowerCase()) && m.getParameterCount()==0){
+                                            f.setAccessible(true);
+                                            f.set(v,m.invoke(v));
+                                            f.setAccessible(false);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     ls.add(v);

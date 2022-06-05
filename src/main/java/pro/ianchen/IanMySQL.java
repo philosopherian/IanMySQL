@@ -514,9 +514,9 @@ public class IanMySQL {
      */
     public <T> void BatchAdd(Class<T> c,List<T> ts) throws Exception {
         Field[] fs= c.getFields();
-        List<HashMap<String,Object>> ls=new ArrayList<HashMap<String, Object>>();
+        List<LinkedHashMap<String,Object>> ls=new ArrayList<LinkedHashMap<String, Object>>();
         for(T t:ts){
-            HashMap<String,Object> ms=new HashMap<String,Object>();
+            LinkedHashMap<String,Object> ms=new LinkedHashMap<String,Object>();
             for(Field f:fs){
                 if(f.getType().isEnum()){
                     String cname=f.getGenericType().getTypeName();
@@ -615,7 +615,7 @@ public class IanMySQL {
      * @param ps 批量参数数据 the hashmap data
      * @throws Exception
      */
-    public void BatchAdd(List<HashMap<String, Object>> ps) throws Exception {
+    public void BatchAdd(List<LinkedHashMap<String, Object>> ps) throws Exception {
         this.BatchAdd(ps,1000);
     }
 
@@ -630,8 +630,8 @@ public class IanMySQL {
      * @param commitRows 每多少条提交一次，对于已开启事务的处理，没有作用 ???
      * @throws Exception
      */
-    public void BatchAdd(List<HashMap<String, Object>> ps, int commitRows) throws Exception {
-        if(ps==null) ps=new ArrayList<HashMap<String, Object>>();
+    public void BatchAdd(List<LinkedHashMap<String, Object>> ps, int commitRows) throws Exception {
+        if(ps==null) ps=new ArrayList<LinkedHashMap<String, Object>>();
         if(ps.size()==0) throw new Exception("empty batch loading parameter");
         if(commitRows<=0) commitRows=1000;
         String sql = this.GetSQL(false, false);
@@ -933,12 +933,12 @@ public class IanMySQL {
      *         the query result list; every row is a hashmap, and the query field name is hashmap key; the corresponding query field value is hashmap value
      * @throws Exception
      */
-    public List<HashMap<String, Object>> GetList() throws Exception {
+    public List<LinkedHashMap<String, Object>> GetList() throws Exception {
         String sql = this.GetSQL(true, true);
         Map<Integer, String> ms=this.parseSQL(sql);
         String sql1=ms.get(0);
         PreparedStatement stm=null;
-        List<HashMap<String, Object>> ls=new ArrayList<HashMap<String, Object>>();
+        List<LinkedHashMap<String, Object>> ls=new ArrayList<LinkedHashMap<String, Object>>();
         try
         {
             stm=this.Connection.prepareStatement(sql1);
@@ -961,7 +961,7 @@ public class IanMySQL {
                 }
             }
             while(rs.next()){
-                HashMap<String, Object> v=new HashMap<String, Object>();
+                LinkedHashMap<String, Object> v=new LinkedHashMap<String, Object>();
                 for(int i=1;i<=colCnt;i++){
                     if(rs.getObject(i) instanceof java.util.Date ||rs.getObject(i) instanceof java.sql.Date || rs.getObject(i) instanceof Timestamp){
                         v.put(md.getColumnLabel(i),IanConvert.ToDate(rs.getTimestamp(i),true));

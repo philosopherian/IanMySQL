@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -97,8 +98,8 @@ public class IanMySQLTest {
                 sql2.AddSqlParamter("@level",3);
                 sql2.SetOrderBy("id desc");
                 sql2.SetLimit("3");
-                List<HashMap<String,Object>> rows=sql2.GetList();
-                for(HashMap<String,Object> row:rows){
+                List<LinkedHashMap<String, Object>> rows=sql2.GetList();
+                for(LinkedHashMap<String,Object> row:rows){
                     String s="id="+IanConvert.ToLong(row.get("id"))+"\t";
                     s+="name="+IanConvert.ToString(row.get("name"))+"\t";
                     s+="level="+IanConvert.ToLong(row.get("level"))+"\t";
@@ -158,7 +159,7 @@ public class IanMySQLTest {
                 IanMySQL sql2=sql.CreateIanMySql();
                 sql2.Sql="select * from temp_1 where id=@id";
                 sql2.AddSqlParamter("@id",mid);
-                List<HashMap<String,Object>> rs=sql2.GetList();
+                List<LinkedHashMap<String, Object>> rs=sql2.GetList();
                 System.out.println("before commit");
                 for(int i=0;i<rs.size();i++){
                     String s="";
@@ -175,7 +176,7 @@ public class IanMySQLTest {
                 IanMySQL sql2=sql.CreateIanMySql();
                 sql2.Sql="select * from temp_1 where id=@id";
                 sql2.AddSqlParamter("@id",mid);
-                List<HashMap<String,Object>> rs=sql2.GetList();
+                List<LinkedHashMap<String, Object>> rs=sql2.GetList();
                 System.out.println("after commit");
                 for(int i=0;i<rs.size();i++){
                     String s="";
